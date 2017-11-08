@@ -31,7 +31,7 @@ def cria_caverna():
     new_local=[]
     
 
-    Tabuleiro[1][1] = -20
+    Tabuleiro[1][1] = -50
     contador=0
     for i in Tabuleiro:
         
