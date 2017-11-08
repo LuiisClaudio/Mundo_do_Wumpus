@@ -5,23 +5,23 @@ def cria_caverna():
     lista_locais_usados = []
     Tabuleiro = []
     coluna = []
-    inimigos_20 = inimigos_50 = gold_ingodo = BURACAO =0 
+    inimigos_20 = inimigos_50 = gold_ingodo = buracao =0 
     #esses sao para definir as paredes da caverna
     for i in range(14):
-        coluna.append(1)
+        coluna.append(-5000)
     Tabuleiro.append(coluna)
     for i in range(12):
         coluna = []
-        coluna.append(1)
+        coluna.append(-5000)
         for i in range (12):
             coluna.append(0)
-        coluna.append(1)
+        coluna.append(-5000)
         Tabuleiro.append(coluna)
         
         
     coluna = []
     for i in range(14):
-        coluna.append(1)
+        coluna.append(-5000)
     Tabuleiro.append(coluna)
     
     #colocar os inimigos, buracos e barras de ouros que valem mais do que dinheiro
@@ -30,11 +30,11 @@ def cria_caverna():
     lista_locais_usados.append([1,1])
     new_local=[]
     
-
+       #Início e saída setado como -50.
     Tabuleiro[1][1] = -50
     contador=0
-    for i in Tabuleiro:
-        
+    for i in Tabuleiro:   
+        #teste 
         print i
     #cria os inimigos que dao 20 de dano
     while(inimigos_20 <2):
@@ -63,7 +63,7 @@ def cria_caverna():
             Tabuleiro[lin_num][col_num] = Tabuleiro[lin_num][col_num]+500
             inimigos_50 = inimigos_50+1
     #cria os buracos
-    while(BURACAO<8):
+    while(buracao<8):
         new_local=[]
         col_num = random.randint(1,12)
         lin_num = random.randint(1,12)
@@ -74,7 +74,7 @@ def cria_caverna():
             lista_locais_usados.append(copy_novo)
             print(lista_locais_usados)
             Tabuleiro[lin_num][col_num] = Tabuleiro[lin_num][col_num]-300
-            BURACAO = BURACAO+1
+            buracao = buracao+1
     #cria as barras de ouro que valem mais do que dinheiro
     while(gold_ingodo<3):
         new_local=[]
@@ -114,15 +114,16 @@ def cria_caverna():
                 Tabuleiro[i+1][j] = Tabuleiro[i+1][j]+7
                 Tabuleiro[i][j+1] = Tabuleiro[i][j+1]+7
     '''        
-
-    for i in range(13):
+   
+    for i in range(13):        
         for j in range(13):
+            #BRISAS AQUI \/
             if Tabuleiro[i][j] >-400 and Tabuleiro[i][j] < -100:
                 Tabuleiro[i-1][j] = Tabuleiro[i-1][j]+13
                 Tabuleiro[i][j-1] = Tabuleiro[i][j-1]+13
                 Tabuleiro[i+1][j] = Tabuleiro[i+1][j]+13
                 Tabuleiro[i][j+1] = Tabuleiro[i][j+1]+13
-                
+            #FEDORZAUM AQUI \/
             if Tabuleiro[i][j] >80 and Tabuleiro[i][j] < 700:
                 Tabuleiro[i-1][j] = Tabuleiro[i-1][j]+7
                 Tabuleiro[i][j-1] = Tabuleiro[i][j-1]+7
@@ -131,5 +132,5 @@ def cria_caverna():
                 
     for i in Tabuleiro:
         print i
-
+    print 'Buracos:' ,buracao , '\tInimigos com 20 de dano:', inimigos_20, '\tInimigos com 50 de dano:', inimigos_50, '\tGold:', gold_ingodo 
 cria_caverna()
