@@ -8,10 +8,8 @@ brisa(protagonista,sul).
 brisa(protagonista,leste).
 brisa(protagonista,oeste).
 
-brilhoouro(protagonista,norte).
-brilhoouro(protagonista,sul).
-brilhoouro(protagonista,leste).
-brilhoouro(protagonista,oeste).
+brilhoouro(protagonista):-pegaouro(local).
+
 
 parede(protagonista,norte).
 parede(protagonista,sul).
