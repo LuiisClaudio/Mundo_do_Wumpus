@@ -30,11 +30,11 @@ def cria_caverna():
     lista_locais_usados.append([1,1])
     new_local=[]
     
-       #Início e saída setado como -50.
+
     Tabuleiro[1][1] = -50
     contador=0
-    for i in Tabuleiro:   
-        #teste 
+    for i in Tabuleiro:
+        
         print i
     #cria os inimigos que dao 20 de dano
     while(inimigos_20 <2):
@@ -114,16 +114,15 @@ def cria_caverna():
                 Tabuleiro[i+1][j] = Tabuleiro[i+1][j]+7
                 Tabuleiro[i][j+1] = Tabuleiro[i][j+1]+7
     '''        
-   
-    for i in range(13):        
+
+    for i in range(13):
         for j in range(13):
-            #BRISAS AQUI \/
             if Tabuleiro[i][j] >-400 and Tabuleiro[i][j] < -100:
                 Tabuleiro[i-1][j] = Tabuleiro[i-1][j]+13
                 Tabuleiro[i][j-1] = Tabuleiro[i][j-1]+13
                 Tabuleiro[i+1][j] = Tabuleiro[i+1][j]+13
                 Tabuleiro[i][j+1] = Tabuleiro[i][j+1]+13
-            #FEDORZAUM AQUI \/
+                
             if Tabuleiro[i][j] >80 and Tabuleiro[i][j] < 700:
                 Tabuleiro[i-1][j] = Tabuleiro[i-1][j]+7
                 Tabuleiro[i][j-1] = Tabuleiro[i][j-1]+7
@@ -133,4 +132,28 @@ def cria_caverna():
     for i in Tabuleiro:
         print i
     print 'Buracos:' ,buracao , '\tInimigos com 20 de dano:', inimigos_20, '\tInimigos com 50 de dano:', inimigos_50, '\tGold:', gold_ingodo 
+
 cria_caverna()
+
+
+
+#pensando no q faço com ele
+def agente(x,y, olhando_para):
+    posx_atual = x
+    posy_atual = y
+    virado = olhando_para
+    
+
+def movimento_virar(olhando_para,novo):
+    '''
+    Define uma função para modificar o 'campo de visão' do arqueiro.
+    Pensando na ordem wasd, w=norte e tal.
+    '''
+    if novo == 'norte':
+        olhando_para = [1,0,0,0]
+        if novo == 'oeste':
+            olhando_para = [0,1,0,0]
+            if novo == 'sul':
+                olhando_para = [0,0,1,0]
+                if novo == 'leste':
+                    olhando_para = [0,0,0,1]
