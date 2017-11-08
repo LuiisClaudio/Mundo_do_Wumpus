@@ -106,4 +106,4 @@ pode_ter_poco(X,Y):-
 pode_ter_inimigo(X,Y):-
 	sentiu_fedor_inimigo(XX,YY) ; adjacente(XX,YY,X,Y).
 	
-adjacente(XX,YY,X,Y) :- (XX IS X +1 ; XX IS X-1) , (YY IS Y+1; YY IS Y-1).
+adjacente(XX,YY,X,Y) :- (XX is X +1 ; XX is X-1) , (YY is Y+1; YY is Y-1).
