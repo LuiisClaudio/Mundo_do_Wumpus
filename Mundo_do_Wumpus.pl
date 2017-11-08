@@ -8,7 +8,7 @@
 :- dynamic energia/1.
 :- dynamic score/1.
 :- dynamic municao/1.
-:- dynamic protagonista_location/3.
+:- dynamic arqueiro_location/3.
 :- dynamic visitadas/2.
 :- dynamic exiting/1.
 :- dynamic caminhoAtual/1.
@@ -21,11 +21,11 @@
 
 %Percepcoes
 sentiu_brisa_poco(X, Y) :- adjacente(X, Y, XX, YY), poco(XX, YY), !.
-sentiu_brisa_poco() :- protagonista_location(X, Y, _), sentiu_brisa_poco(X, Y), !.
+sentiu_brisa_poco() :- arqueiro_location(X, Y, _), sentiu_brisa_poco(X, Y), !.
 
 %Movimentos possíveis
 
-proximo_movimento(sair) :- protagonista_location(X, Y, _), inicio(X, Y), exiting(1), !.
+proximo_movimento(sair) :- arqueiro_location(X, Y, _), inicio(X, Y), exiting(1), !.
 
 
 
@@ -33,7 +33,7 @@ proximo_movimento(morreu) :- energia(E), E < 1,format('Regra 1'), !.
 
 
 
-proximo_movimento(pegar_ouro) :- protagonista_location(X, Y, _), ouro(X, Y), retract(ouro(X, Y)), assert(vazia(X, Y)),
+proximo_movimento(pegar_ouro) :- arqueiro_location(X, Y, _), ouro(X, Y), retract(ouro(X, Y)), assert(vazia(X, Y)),
 					     mario_somar_score(1000),format('Regra 2'), !. 
 
 
@@ -98,3 +98,12 @@ proximo_movimento(Acao) :- score(C), C < 1, tomar_decisao_pode_cair_poco(), prox
 
 
 proximo_movimento(Acao) :- assert(exiting(1)), tomar_decisao_sair(), proximo_movimento(Acao), writef('Vai sair!\n'),format('Regra 21'), !.
+
+
+
+pode_ter_poco(X,Y):-
+	sentiu_brisa_poco(XX,YY); adjacente(XX,YY,X,Y)
+pode_ter_inimigo(X,Y):-
+	sentiu_fedor_inimigo(XX,YY) ; adjacente(XX,YY,X,Y)
+	
+adjacente(XX,YY,X,Y) :- (XX IS X +1 , XX IS X-1) ; (YY IS Y+1, YY IS Y-1)
