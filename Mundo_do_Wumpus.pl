@@ -101,9 +101,11 @@ proximo_movimento(Acao) :- assert(exiting(1)), tomar_decisao_sair(), proximo_mov
 
 
 
+adjacente(ponto(X,Y),ponto(XX,YY)):-(XX is X,YY is Y-1);(XX is X,YY is Y+1);(YY is Y,XX is X+1);(YY is Y,XX is X-1),!.
+
 pode_ter_poco(X,Y):-
-	sentiu_brisa_poco(XX,YY); adjacente(XX,YY,X,Y).
+	sentiu_brisa_poco(X1,Y1);adjacente(ponto(X1,Y1),ponto(X,Y)).
 pode_ter_inimigo(X,Y):-
-	sentiu_fedor_inimigo(XX,YY) ; adjacente(XX,YY,X,Y).
-	
-adjacente(XX,YY,X,Y) :- (XX is X+1 ; XX is X-1) ; (YY is Y+1; YY is Y-1).
+	sentiu_fedor_inimigo(X2,Y2) ;adjacente(ponto(X2,Y2),ponto(X,Y)).
+pode_ter_poco(X,Y):-naosafe(X,Y).
+pode_ter_inimigo(X,Y):-naosafe(X,Y).
