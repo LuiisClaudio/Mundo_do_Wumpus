@@ -1,15 +1,4 @@
 import random
-from pyswip import Prolog
-'''def ler_prolog():
-    prolog = Prolog()
-    prolog.assertz("father(michael,john)")
-    prolog.assertz("father(michael,gina)")
-    list(prolog.query("father(michael,X)"))
-    prolog.consult("appraise.pl")'''
-    
-#ler_prolog()
-exit()
-
 def cria_caverna():
     
     
@@ -147,6 +136,11 @@ def cria_caverna():
 cria_caverna()
 
 
+#isso aqui precisa estar no database, e é um começo para o prolog
+from pyswip import Prolog
+prolog = Prolog()
+prolog.assertz(parede(0,1))
+prolog.assertz(parede(1,0))
 
 #pensando no q faço com ele
 def agente(x,y, olhando_para):
