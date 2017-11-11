@@ -136,6 +136,11 @@ def cria_caverna():
 cria_caverna()
 
 
+#isso aqui precisa estar no database, e é um começo para o prolog
+from pyswip import Prolog
+prolog = Prolog()
+prolog.assertz(parede(0,1))
+prolog.assertz(parede(1,0))
 
 #pensando no q faço com ele
 def agente(x,y, olhando_para):
