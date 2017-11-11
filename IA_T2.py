@@ -1,4 +1,15 @@
 import random
+from pyswip import Prolog
+'''def ler_prolog():
+    prolog = Prolog()
+    prolog.assertz("father(michael,john)")
+    prolog.assertz("father(michael,gina)")
+    list(prolog.query("father(michael,X)"))
+    prolog.consult("appraise.pl")'''
+    
+#ler_prolog()
+exit()
+
 def cria_caverna():
     
     
