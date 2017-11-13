@@ -135,12 +135,163 @@ proximo_movimento(Acao) :- assert(exiting(1)), tomar_decisao_sair(), proximo_mov
 
 
 
-not(X):-\+X.
-adjacente(ponto(X,Y),ponto(XX,YY)):-(XX is X,YY is Y-1);(XX is X,YY is Y+1);(YY is Y,XX is X+1);(YY is Y,XX is X-1),!.
-pode_ter_poco(X,Y):-
-	sentiu_brisa_poco(X1,Y1);adjacente(ponto(X1,Y1),ponto(X,Y)).
-pode_ter_inimigo(X,Y):-
-	sentiu_fedor_inimigo(X2,Y2);adjacente(ponto(X2,Y2),ponto(X,Y)).
 
-naosafe(X,Y):-(not(safo(X,Y)),not(parede(X,Y)),pode_ter_inimigo(X,Y),pode_ter_poco(X,Y)).
+
+
+
+%Base de conhecimento
+
+%Atualiza todas as certezas do Mario
+
+atualizar_certezas_inimigo() :- 
+	inimigo(_, _, X, Y),
+	pode_ter_inimigo(X, Y),
+	XA is X+1, XB is X-1, YA is Y+1, YB is Y-1,
+	(
+		((parede(XA, Y));visitadas(XA,Y)),
+		((parede(XB, Y));visitadas(XB,Y)),
+		((parede(X, YA));visitadas(X,YA)),
+		((parede(X, YB));visitadas(X,YB))
+	),
+	retractall(pode_ter_inimigo(X, Y)), assert(tem_inimigo(X, Y)).
+	
+atualizar_certezas_teletransporte() :-
+	teletransporte(X, Y),
+	pode_ter_teletransporte(X, Y),
+	XA is X+1, XB is X-1, YA is Y+1, YB is Y-1,
+	(
+		((parede(XA, Y));visitadas(XA,Y)),
+		((parede(XB, Y));visitadas(XB,Y)),
+		((parede(X, YA));visitadas(X,YA)),
+		((parede(X, YB));visitadas(X,YB))
+	),
+	retractall(pode_ter_teletransporte(X, Y)), assert(tem_teletransporte(X, Y)).
+	
+atualizar_certezas_poco() :-
+	poco(X, Y),
+	pode_ter_poco(X, Y),
+	XA is X+1, XB is X-1, YA is Y+1, YB is Y-1,
+	(
+		((parede(XA, Y));visitadas(XA,Y)),
+		((parede(XB, Y));visitadas(XB,Y)),
+		((parede(X, YA));visitadas(X,YA)),
+		((parede(X, YB));visitadas(X,YB))
+	),
+	retractall(pode_ter_poco(X, Y)), assert(tem_poco(X, Y)).
+	
+atualizar_certezas_geral() :-
+	(atualizar_certezas_inimigo();1=1),
+	(atualizar_certezas_teletransporte();1=1),
+	(atualizar_certezas_poco();1=1), !.
+
+remover_incertezas_casa_atual() :- 
+		mario_location(X, Y, _),
+		(
+			((not(poco(X, Y)), assert(nao_tem_poco(X, Y)), retractall(pode_ter_poco(X, Y)));1=1),
+			((not(inimigo(_, _, X, Y)), assert(nao_tem_inimigo(X, Y)), retractall(pode_ter_inimigo(X, Y)));1=1),
+			((not(teletransporte(X, Y)), assert(nao_tem_teletransporte(X, Y)), retractall(pode_ter_teletransporte(X, Y)));1=1)
+		), !.
+
+atualizar_incertezas() :- (
+		(remover_incertezas_casa_atual();1=1),
+		((sentiu_brisa_poco(), descobre_poco_adjacente());1=1),
+		((ouviu_passos_inimigo(), descobre_adjacente_pode_ter_inimigo());1=1),
+		((percebeu_flash_teletransporte(), descobre_adjacente_pode_ter_teletransporte());1=1),
+		(( not(sentiu_brisa_poco()), remover_incertezas_pocos_adjacentes() );1=1),
+		(( not(ouviu_passos_inimigo()), remover_incertezas_inimigos_adjacentes() );1=1),
+		(( not(percebeu_flash_teletransporte()), remover_incertezas_teletransportes_adjacentes() );1=1),
+		((atualizar_certezas_geral());1=1)
+	), !.
+
+
+
+
+
+
+
+
+remover_incerteza_poco_adjacente(X, Y) :- assert(nao_tem_poco(X, Y)), retractall(pode_ter_poco(X, Y)), !.	
+remover_incertezas_pocos_adjacentes() :-
+	mario_location(X, Y, _),
+	(( XX is X+1, adjacente(X, Y, XX, Y), remover_incerteza_poco_adjacente(XX, Y) );1=1),
+	(( XXX is X-1, adjacente(X, Y, XXX, Y), remover_incerteza_poco_adjacente(XXX, Y) );1=1),
+	(( YY is Y+1, adjacente(X, Y, X, YY), remover_incerteza_poco_adjacente(X, YY) );1=1),
+	(( YYY is Y-1, adjacente(X, Y, X, YYY), remover_incerteza_poco_adjacente(X, YYY) );1=1), !.
+
+
+
+remover_incertezas_inimigos_adjacentes(X, Y) :- assert(nao_tem_inimigo(X, Y)), retractall(pode_ter_inimigo(X, Y)), !.			   
+remover_incertezas_inimigos_adjacentes() :-
+	mario_location(X, Y, _),
+	(( XX is X+1, adjacente(X, Y, XX, Y), remover_incertezas_inimigos_adjacentes(XX, Y) );1=1),
+	(( XXX is X-1, adjacente(X, Y, XXX, Y), remover_incertezas_inimigos_adjacentes(XXX, Y) );1=1),
+	(( YY is Y+1, adjacente(X, Y, X, YY), remover_incertezas_inimigos_adjacentes(X, YY) );1=1),
+	(( YYY is Y-1, adjacente(X, Y, X, YYY), remover_incertezas_inimigos_adjacentes(X, YYY) );1=1), !.
+
+
+
+
+
+
+
+
+
+
+%descorbertas
+
+descobre_pode_ter_poco(X, Y) :- not(visitadas(X, Y)), not(nao_tem_poco(X, Y)), assert(pode_ter_poco(X, Y)), !.
+
+descobre_poco_adjacente() :-
+	mario_location(X, Y, _),
+	(( XX is X+1, adjacente(X, Y, XX, Y), descobre_pode_ter_poco(XX, Y) );1=1),
+	(( XXX is X-1, adjacente(X, Y, XXX, Y), descobre_pode_ter_poco(XXX, Y) );1=1),
+	(( YY is Y+1, adjacente(X, Y, X, YY), descobre_pode_ter_poco(X, YY) );1=1),
+	(( YYY is Y-1, adjacente(X, Y, X, YYY), descobre_pode_ter_poco(X, YYY) );1=1), !.
+
+
+
+descobre_pode_ter_inimigo(X, Y) :- not(visitadas(X, Y)), not(tem_inimigo(X, Y)), not(nao_tem_inimigo(X, Y)), assert(pode_ter_inimigo(X, Y)), !.
+descobre_adjacente_pode_ter_inimigo() :-
+	mario_location(X, Y, _),
+	(( XX is X+1, adjacente(X, Y, XX, Y), descobre_pode_ter_inimigo(XX, Y) );1=1),
+	(( XXX is X-1, adjacente(X, Y, XXX, Y), descobre_pode_ter_inimigo(XXX, Y) );1=1),
+	(( YY is Y+1, adjacente(X, Y, X, YY), descobre_pode_ter_inimigo(X, YY) );1=1),
+	(( YYY is Y-1, adjacente(X, Y, X, YYY), descobre_pode_ter_inimigo(X, YYY) );1=1), !.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%Atualiza pontuação
+
+arqueiro_somar_score(SOM) :- score(C), CC is C+SOM, retract(score(C)), assert(score(CC)).
+arqueiro_subtrair_score(SUB) :- SOM is SUB * -1, arqueiro_somar_score(SOM).
+
+arqueiro_somar_energia(SOM) :- energia(E), EE is E+SOM, retract(energia(E)), assert(energia(EE)).
+arqueiro_subtrair_energia(SUB) :- SOM is SUB * -1, arqueiro_somar_energia(SOM).
+
+
+arqueiro_perdeu_municao() :- municao(Municao), NewAmmo is Municao - 1, retract(municao(Municao)), assert(municao(NewAmmo)), !.
+
+
+
+%Parte que Kevin fez! Me explica depois please...
+%not(X):-\+X.
+%adjacente(ponto(X,Y),ponto(XX,YY)):-(XX is X,YY is Y-1);(XX is X,YY is Y+1);(YY is Y,XX is X+1);(YY is Y,XX is X-1),!.
+%pode_ter_poco(X,Y):-
+	%sentiu_brisa_poco(X1,Y1);adjacente(ponto(X1,Y1),ponto(X,Y))!.
+%pode_ter_inimigo(X,Y):-
+	%sentiu_fedor_inimigo(X2,Y2);adjacente(ponto(X2,Y2),ponto(X,Y))!.
+
+%naosafe(X,Y):-(not(safo(X,Y)),not(parede(X,Y)),pode_ter_inimigo(X,Y),pode_ter_poco(X,Y)).
 
