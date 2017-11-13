@@ -8,19 +8,18 @@ brisa(protagonista,sul).
 brisa(protagonista,leste).
 brisa(protagonista,oeste).
 
-brilhoouro(protagonista):-pegaouro(local).
-
-
 parede(protagonista,norte).
 parede(protagonista,sul).
 parede(protagonista,leste).
 parede(protagonista,oeste).
 
 
-arqueiro_location(a, 1, 1).
-arqueiro_location(b, 2, 2).
+local_arqueiro(1, 1, norte).
+
+
 
 inicio(1,1).
+
 vazia(1,2).
 vazia(1,3).
 vazia(1,4).
@@ -193,6 +192,7 @@ parede(12,13).
 ouro(11,2).
 ouro(3,5).
 ouro(9,11).
+inimigo(20,100,1,2).
 inimigo(20,100,10,2).
 inimigo(50,100,5,6).
 inimigo(20,100,2,9).
@@ -208,3 +208,4 @@ poco(2,11).
 powerup(2,2).
 powerup(7,7).
 powerup(1,12).
+pode_ter_inimigo(1,2).
