@@ -148,17 +148,34 @@ def agente(x,y, olhando_para):
     posy_atual = y
     virado = olhando_para
     
-
+#só a função q faz o bixo virar ingame
 def movimento_virar(olhando_para,novo):
     '''
     Define uma função para modificar o 'campo de visão' do arqueiro.
     Pensando na ordem wasd, w=norte e tal.
     '''
     if novo == 'norte':
-        olhando_para = [1,0,0,0]
+        olhando_para = 'norte'
         if novo == 'oeste':
-            olhando_para = [0,1,0,0]
+            olhando_para = 'oeste'
             if novo == 'sul':
-                olhando_para = [0,0,1,0]
+                olhando_para = 'sul'
                 if novo == 'leste':
-                    olhando_para = [0,0,0,1]
+                    olhando_para = 'leste'
+                    
+#usa no 'tabuleiro' depois com o python lá em cima     
+def arqueiro_anda(X,Y,virado_para):
+    newy = Y
+    newx = X
+    if virado_para == 'norte':
+        newx = newx-1
+    elif virado_para == 'sul':
+        newx = newx+1
+    elif virado_para == 'oeste':
+        newy = newy-1
+    elif virado_para == 'leste':
+        newy = newy+1
+        
+    return newx, newy
+
+
