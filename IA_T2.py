@@ -144,20 +144,25 @@ prolog = Prolog()
 
 
 def acha_coordenada_arqueiro():
-    prolog.consult('database.pl')
-    prolog.consult('Mundo_do_Wumpus.pl')
+    #prolog.consult('database.pl')
+    #prolog.consult('Mundo_do_Wumpus.pl')
     local_atual = list(prolog.query("local_arqueiro(X,Y, D)"))
     if len(local_atual) == 0:
         return
     x = local_atual[0].get("X")
     y = local_atual[0].get("Y")
     direcao = local_atual[0].get("D")
+    prolog.assertz("visitadas(%s,%s)" %(x,y))
     return x,y,direcao
+
+
 print acha_coordenada_arqueiro()
 def ret_sentiu_brisa_poco():
     sente_brisa = prolog.query('sentiu_brisa_poco(X,Y)')
     if len(sente_brisa) == 0:
         return
+    
+    
 def faz_percepcao():
     return
     
