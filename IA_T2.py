@@ -139,9 +139,28 @@ cria_caverna()
 #isso aqui precisa estar no database, e é um começo para o prolog
 from pyswip import Prolog
 prolog = Prolog()
-prolog.assertz(parede(0,1))
-prolog.assertz(parede(1,0))
+#prolog.consult('database.pl')
+#prolog.consult('Mundo_do_Wumpus.pl')
 
+
+def acha_coordenada_arqueiro():
+    prolog.consult('database.pl')
+    prolog.consult('Mundo_do_Wumpus.pl')
+    local_atual = list(prolog.query("local_arqueiro(X,Y, D)"))
+    if len(local_atual) == 0:
+        return
+    x = local_atual[0].get("X")
+    y = local_atual[0].get("Y")
+    direcao = local_atual[0].get("D")
+    return x,y,direcao
+print acha_coordenada_arqueiro()
+def ret_sentiu_brisa_poco():
+    sente_brisa = prolog.query('sentiu_brisa_poco(X,Y)')
+    if len(sente_brisa) == 0:
+        return
+def faz_percepcao():
+    return
+    
 #pensando no q faço com ele
 def agente(x,y, olhando_para):
     posx_atual = x
