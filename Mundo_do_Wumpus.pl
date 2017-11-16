@@ -23,6 +23,7 @@
 :- dynamic ouro/2.
 :- dynamic inimigo/4.
 :- dynamic ouviu_passos_inimigo/2.
+:- dynamic seguro/2.
 
 %funcionou
 adjacente(X, Y, XX, Y) :- XX is X+1, pode_ser_acessada(XX, Y).

@@ -160,11 +160,34 @@ def ret_sentiu_brisa_poco(x, y):
     if len(sente_brisa) == 0:
         return False
     return True
+
+def assert_pode_ter_inimigo(x, y):
+    if prolog.query("seguro(%s, %s)"%(x+1,y)) != {}:
+        print 'Entrei'
+        prolog.assertz("pode_ter_inimigo(%s,%s)" %(x+1,y))
+    if prolog.query("seguro(%s, %s)"%(x-1, y)) != {}:
+        print 'Entrei'
+        prolog.assertz("pode_ter_inimigo(%s,%s)" %(x-1, y))
+    if prolog.query("seguro(%s, %s)"%(x,y+1)) != {}:
+        print 'Entrei'
+        prolog.assertz("pode_ter_inimigo(%s,%s)" %(x,y+1))
+    if prolog.query("seguro(%s, %s)"%(x,y-1)) != {}:
+        print 'Entrei'
+        prolog.assertz("pode_ter_inimigo(%s,%s)" %(x,y-1))
+assert_pode_ter_inimigo(1,1)
 def assert_pode_ter_poco(x, y):
-    prolog.assertz("seguro(%s,%s)" %(x+1,y))
-    prolog.assertz("seguro(%s,%s)" %(x-1, y))
-    prolog.assertz("seguro(%s,%s)" %(x,y+1))
-    prolog.assertz("seguro(%s,%s)" %(x,y-1))
+    if prolog.query("seguro(%s, %s)"%(x+1,y)) != {}:
+        print 'Entrei'
+        prolog.assertz("pode_ter_poco(%s,%s)" %(x+1,y))
+    if prolog.query("seguro(%s, %s)"%(x-1, y)) != {}:
+        print 'Entrei'
+        prolog.assertz("pode_ter_poco(%s,%s)" %(x-1, y))
+    if prolog.query("seguro(%s, %s)"%(x,y+1)) != {}:
+        print 'Entrei'
+        prolog.assertz("pode_ter_poco(%s,%s)" %(x,y+1))
+    if prolog.query("seguro(%s, %s)"%(x,y-1)) != {}:
+        print 'Entrei'
+        prolog.assertz("pode_ter_poco(%s,%s)" %(x,y-1))
 assert_pode_ter_poco(1,1)
         
 def ret_sentiu_fedor(x, y):
@@ -206,9 +229,7 @@ def cosulta_database(x, y):
     ouro = list(prolog.query("ouro(%s,%s)"%(x, y)))
     poco = list(prolog.query("poco(%s,%s)"%(x, y)))
     inimigo = list(prolog.query("inimigo(_,_,%s,%s)"%(x, y)))
-    parede = list(prolog.query("parede(%s,%s)"%(x, y)))
-    print parede, ouro, poco, inimigo
-    return
+    return parede, ouro, poco, inimigo
 cosulta_database(1,1)
 print faz_percepcao()
 #pensando no q faço com ele
