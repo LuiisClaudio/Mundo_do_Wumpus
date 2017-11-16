@@ -139,6 +139,7 @@ cria_caverna()
 #isso aqui precisa estar no database, e é um começo para o prolog
 from pyswip import Prolog
 prolog = Prolog()
+tentou_andar=0
 #prolog.consult('database.pl')
 #prolog.consult('Mundo_do_Wumpus.pl')
 
@@ -285,8 +286,9 @@ def arqueiro_anda(x,y,direcao):
                 descobre_parede_adjacente(x-1,y)
                 tentou_andar=0
         else:
-            arqueiro_anda(x,y,'oeste')
             tentou_andar=tentou_andar+1
+            arqueiro_anda(x,y,'oeste')
+            
     if(direcao == 'sul'):
         if (len(list(prolog.query("seguro(%s,%s)" %(x+1,y))))>0):
             if(not detecta_parede(x+1,y)):
@@ -297,8 +299,9 @@ def arqueiro_anda(x,y,direcao):
                 descobre_parede_adjacente(x+1,y)
                 tentou_andar=0
         else:
-            arqueiro_anda(x,y, 'leste')
             tentou_andar=tentou_andar+1
+            arqueiro_anda(x,y, 'leste')
+            
     if(direcao == 'leste'):
         if (len(list(prolog.query("seguro(%s,%s)" %(x,y+1))))>0):
             if(not detecta_parede(x,y+1)):
@@ -309,8 +312,9 @@ def arqueiro_anda(x,y,direcao):
                 descobre_parede_adjacente(x,y+1)
                 tentou_andar=0
         else:
-            arqueiro_anda(x,y,'norte')
             tentou_andar=tentou_andar+1
+            arqueiro_anda(x,y,'norte')
+            
     if (direcao == 'oeste'):
         if (len(list(prolog.query("seguro(%s,%s)" %(x,y-1))))>0):
             if(not detecta_parede(x,y-1)):
@@ -321,8 +325,9 @@ def arqueiro_anda(x,y,direcao):
                 descobre_parede_adjacente(x,y-1)
                 tentou_andar=0
         else:
-            arqueiro_anda(x,y,'sul')
             tentou_andar=tentou_andar+1
+            arqueiro_anda(x,y,'sul')
+            
                 
                 
 #função usada pela arqueiro_anda
