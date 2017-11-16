@@ -148,19 +148,57 @@ def acha_coordenada_arqueiro():
     prolog.consult('Mundo_do_Wumpus.pl')
     local_atual = list(prolog.query("local_arqueiro(X,Y, D)"))
     if len(local_atual) == 0:
-        return
+        return False, False, False
     x = local_atual[0].get("X")
     y = local_atual[0].get("Y")
     direcao = local_atual[0].get("D")
     return x,y,direcao
 print acha_coordenada_arqueiro()
-def ret_sentiu_brisa_poco():
-    sente_brisa = prolog.query('sentiu_brisa_poco(X,Y)')
-    if len(sente_brisa) == 0:
-        return
-def faz_percepcao():
-    return
     
+def ret_sentiu_brisa_poco(x, y):
+    sente_brisa = list(prolog.query("sentiu_brisa_poco(%s,%s)"%(x, y)))
+    if len(sente_brisa) == 0:
+        return False
+    return True
+def assert_pode_ter_poco(x, y):
+    prolog.assertz("seguro(%s,%s)" %(x+1,y))
+    prolog.assertz("seguro(%s,%s)" %(x-1, y))
+    prolog.assertz("seguro(%s,%s)" %(x,y+1))
+    prolog.assertz("seguro(%s,%s)" %(x,y-1))
+assert_pode_ter_poco(1,1)
+        
+def ret_sentiu_fedor(x, y):
+    sentiu_fedor = list(prolog.query("sentiu_fedor(%s,%s)"%(x, y)))
+    if len(sentiu_fedor) == 0:
+        return False
+    return True
+def ret_sentiu_brilho(x, y):
+    sentiu_brilho = list(prolog.query("ouro(%s,%s)"%(x, y)))
+    if len(sentiu_brilho) == 0:
+        return False
+    return True
+
+def detecta_parede(x,y):
+
+    
+            
+def faz_percepcao():
+    x, y, d = acha_coordenada_arqueiro()
+    percebeu = list(prolog.query("sentiu_alguma_coisa(%s, %s)" %(x,y)))
+    if len(percebeu) == 0:
+        #Nao sentiu nada
+        return
+    
+    sentiu_brisa = ret_sentiu_brisa_poco(x,y)
+    print 'Brisa ', sentiu_brisa
+    if sentiu_brisa == True:
+       assert_pode_ter_poco(x, y) 
+    sentiu_fedor = ret_sentiu_fedor(x,y)
+    print 'Fedor', sentiu_fedor
+    sentiu_brilho = ret_sentiu_brilho(x, y)
+    print 'Brilho', sentiu_brilho
+    return
+print faz_percepcao()
 #pensando no q faço com ele
 def agente(x,y, olhando_para):
     posx_atual = x

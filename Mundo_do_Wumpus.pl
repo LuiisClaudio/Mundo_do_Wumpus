@@ -42,10 +42,6 @@ estado_atual_arqueiro(X, Y, Direcao, Energia, Score, Municao) :- local_arqueiro(
 sentiu_brisa_poco(X, Y) :- adjacente(X, Y, XX, YY), poco(XX, YY), !. 
 sentiu_brisa_poco() :- local_arqueiro(X, Y, _), sentiu_brisa_poco(X, Y), !.
 
-pode_ter_poco(XX, YY) :- sentiu_brisa_poco(X, Y), adjacente(XX, YY, X, Y), !.
-
-assert(pode_ter_poco(X, Y)) :- sentiu_brisa_poco(XX, YY), adjacente(X, Y, XX, YY), !.
-sentiu_brisa_poco(X,Y) , adjacente(X,Y,XX,YY) :- assert(pode_ter_poco(XX,YY)).
 
 sentiu_fedor(X, Y) :- adjacente(X, Y, XX, YY), inimigo(_, _, XX, YY), !.
 sentiu_fedor() :- local_arqueiro(X, Y, _), sentiu_fedor(X, Y), !.
