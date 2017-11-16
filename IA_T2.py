@@ -235,6 +235,13 @@ def arqueiro_anda(X,Y,virado_para):
         
     return newx, newy
 
+def detecta_parede(x,y):
+    eh_parede = list(prolog.query("parede(%s,%s)" %(x,y)))
+    if (len(eh_parede)==0):
+            print 'n era parede'
+            return False
+    return True
+
 
 ###COPIA A FUNCAO
 def percepcoes_ativa(x,y):
