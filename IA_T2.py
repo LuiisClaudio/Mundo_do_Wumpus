@@ -179,8 +179,11 @@ def ret_sentiu_brilho(x, y):
     return True
 
 def detecta_parede(x,y):
-
-    
+    eh_parede = list(prolog.query("parede(%s,%s)" %(x,y)))
+    if (len(eh_parede)==0):
+            print 'n era parede'
+            return False
+    return True
             
 def faz_percepcao():
     x, y, d = acha_coordenada_arqueiro()
@@ -198,6 +201,15 @@ def faz_percepcao():
     sentiu_brilho = ret_sentiu_brilho(x, y)
     print 'Brilho', sentiu_brilho
     return
+def cosulta_database(x, y):
+    parede = list(prolog.query("parede(%s,%s)"%(x, y)))
+    ouro = list(prolog.query("ouro(%s,%s)"%(x, y)))
+    poco = list(prolog.query("poco(%s,%s)"%(x, y)))
+    inimigo = list(prolog.query("inimigo(_,_,%s,%s)"%(x, y)))
+    parede = list(prolog.query("parede(%s,%s)"%(x, y)))
+    print parede, ouro, poco, inimigo
+    return
+cosulta_database(1,1)
 print faz_percepcao()
 #pensando no q faço com ele
 def agente(x,y, olhando_para):
@@ -234,13 +246,6 @@ def arqueiro_anda(X,Y,virado_para):
         newy = newy+1
         
     return newx, newy
-
-def detecta_parede(x,y):
-    eh_parede = list(prolog.query("parede(%s,%s)" %(x,y)))
-    if (len(eh_parede)==0):
-            print 'n era parede'
-            return False
-    return True
 
 
 ###COPIA A FUNCAO
