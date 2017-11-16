@@ -144,20 +144,24 @@ prolog = Prolog()
 
 
 def acha_coordenada_arqueiro():
-    prolog.consult('database.pl')
-    prolog.consult('Mundo_do_Wumpus.pl')
+    #prolog.consult('database.pl')
+    #prolog.consult('Mundo_do_Wumpus.pl')
     local_atual = list(prolog.query("local_arqueiro(X,Y, D)"))
     if len(local_atual) == 0:
         return False, False, False
     x = local_atual[0].get("X")
     y = local_atual[0].get("Y")
     direcao = local_atual[0].get("D")
+    prolog.assertz("visitadas(%s,%s)" %(x,y))
     return x,y,direcao
+
+
 print acha_coordenada_arqueiro()
     
 def ret_sentiu_brisa_poco(x, y):
     sente_brisa = list(prolog.query("sentiu_brisa_poco(%s,%s)"%(x, y)))
     if len(sente_brisa) == 0:
+<<<<<<< HEAD
         return False
     return True
 def assert_pode_ter_poco(x, y):
@@ -182,6 +186,11 @@ def detecta_parede(x,y):
 
     
             
+=======
+        return
+    
+    
+>>>>>>> e8cf4d7ed9eda981e9dbdd6086a5fb87cf1ec908
 def faz_percepcao():
     x, y, d = acha_coordenada_arqueiro()
     percebeu = list(prolog.query("sentiu_alguma_coisa(%s, %s)" %(x,y)))
@@ -235,4 +244,44 @@ def arqueiro_anda(X,Y,virado_para):
         
     return newx, newy
 
+
+##COPIA DAQUI ESSA PORRA
+def percepcoes_ativa(x,y):
+    percebeu = list(prolog.query("sentiu_alguma_coisa(%s, %s)" %(x,y)))
+    if (len(percebeu)>0):
+        print 'tem algo'
+        percebeu2 = list(prolog.query("sentiu_brisa_poco(%s,%s)" %(x,y)))
+        if len(percebeu2)>0:
+            print 'xd2 '
+            return 'tem_poco_adjacente'
+        percebeu3 = list(prolog.query("sentiu_fedor(%s,%s)" %(x,y)))
+        if len(percebeu3)>0:
+            print 'tem fedor'
+            return 'tem_inimigo_adjacente'
+    else:
+        eh_parede = list(prolog.query("parede(%s,%s)" %(x+1,y)))
+        if (len(eh_parede)==0):
+            print 'n era parede 1'
+            #em baixo tratar depois de uma forma mais decente
+            prolog.query("retract(seguro(%s,%s))" %(x+1,y))
+            prolog.assertz("seguro(%s,%s)" %(x+1,y))
+        eh_parede2 = list(prolog.query("parede(%s,%s)" %(x-1,y)))
+        if (len(eh_parede2)==0):
+            print 'n era parede2'
+            #em baixo tratar depois de uma forma mais decente
+            prolog.query("retract(seguro(%s,%s))" %(x-1,y))
+            prolog.assertz("seguro(%s,%s)" %(x-1, y))
+        eh_parede3 = list(prolog.query("parede(%s,%s)" %(x,y+1)))
+        if (len(eh_parede3)==0):
+            print 'n era parede3'
+            #em baixo tratar depois de uma forma mais decente
+            prolog.query("retract(seguro(%s,%s))" %(x,y-1))
+            prolog.assertz("seguro(%s,%s)" %(x,y+1))
+        eh_parede4 = list(prolog.query("parede(%s,%s)" %(x,y-1)))
+        if (len(eh_parede4)==0):
+            print 'n era parede4'
+            #em baixo tratar depois de uma forma mais decente
+            prolog.query("retract(seguro(%s,%s))" %(x,y-1))
+            prolog.assertz("seguro(%s,%s)" %(x,y-1))
+        
 
