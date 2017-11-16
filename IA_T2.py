@@ -285,10 +285,11 @@ def arqueiro_anda(x,y,direcao):
                     prolog.assertz("visitadas(%s,%s)" %(x-1,y))
                 descobre_parede_adjacente(x-1,y)
                 tentou_andar=0
+                print'andou norte'
         else:
-            tentou_andar=tentou_andar+1
+            print'else para oeste'
             arqueiro_anda(x,y,'oeste')
-            
+            tentou_andar=tentou_andar+1
     if(direcao == 'sul'):
         if (len(list(prolog.query("seguro(%s,%s)" %(x+1,y))))>0):
             if(not detecta_parede(x+1,y)):
@@ -298,10 +299,11 @@ def arqueiro_anda(x,y,direcao):
                     prolog.assertz("visitadas(%s,%s)" %(x+1,y))
                 descobre_parede_adjacente(x+1,y)
                 tentou_andar=0
+                print'andou sul'
         else:
-            tentou_andar=tentou_andar+1
+            print'else para leste'
             arqueiro_anda(x,y, 'leste')
-            
+            tentou_andar=tentou_andar+1
     if(direcao == 'leste'):
         if (len(list(prolog.query("seguro(%s,%s)" %(x,y+1))))>0):
             if(not detecta_parede(x,y+1)):
@@ -311,10 +313,11 @@ def arqueiro_anda(x,y,direcao):
                     prolog.assertz("visitadas(%s,%s)" %(x,y+1))
                 descobre_parede_adjacente(x,y+1)
                 tentou_andar=0
+                print'andou leste'
         else:
-            tentou_andar=tentou_andar+1
+            print'else para norte'
             arqueiro_anda(x,y,'norte')
-            
+            tentou_andar=tentou_andar+1
     if (direcao == 'oeste'):
         if (len(list(prolog.query("seguro(%s,%s)" %(x,y-1))))>0):
             if(not detecta_parede(x,y-1)):
@@ -324,12 +327,14 @@ def arqueiro_anda(x,y,direcao):
                     prolog.assertz("visitadas(%s,%s)" %(x,y-1))
                 descobre_parede_adjacente(x,y-1)
                 tentou_andar=0
+                print'andou oeste'
         else:
-            tentou_andar=tentou_andar+1
+            print'else para sult'
             arqueiro_anda(x,y,'sul')
+            tentou_andar=tentou_andar+1
+                
             
-                
-                
+arqueiro_anda(5,6,'sul')
 #função usada pela arqueiro_anda
 #ela descobre paredes adjacentes ao arqueiro e coloca no db
 def descobre_parede_adjacente(x,y):
