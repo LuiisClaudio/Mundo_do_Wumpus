@@ -140,13 +140,11 @@ cria_caverna()
 from pyswip import Prolog
 prolog = Prolog()
 tentou_andar=0
-#prolog.consult('database.pl')
-#prolog.consult('Mundo_do_Wumpus.pl')
-
-
+prolog.consult('database.pl')
+prolog.consult('Mundo_do_Wumpus.pl')
 def acha_coordenada_arqueiro():
-    prolog.consult('database.pl')
-    prolog.consult('Mundo_do_Wumpus.pl')
+    #prolog.consult('database.pl')
+    #prolog.consult('Mundo_do_Wumpus.pl')
     local_atual = list(prolog.query("local_arqueiro(X,Y, D)"))
     if len(local_atual) == 0:
         return False, False, False
@@ -154,7 +152,7 @@ def acha_coordenada_arqueiro():
     y = local_atual[0].get("Y")
     direcao = local_atual[0].get("D")
     return x,y,direcao
-print acha_coordenada_arqueiro()
+#print acha_coordenada_arqueiro()
     
 def ret_sentiu_brisa_poco(x, y):
     sente_brisa = list(prolog.query("sentiu_brisa_poco(%s,%s)"%(x, y)))
@@ -175,7 +173,9 @@ def assert_pode_ter_inimigo(x, y):
     if prolog.query("seguro(%s, %s)"%(x,y-1)) != {}:
         print 'Entrei'
         prolog.assertz("pode_ter_inimigo(%s,%s)" %(x,y-1))
-assert_pode_ter_inimigo(1,1)
+#assert_pode_ter_inimigo(1,1)
+
+
 def assert_pode_ter_poco(x, y):
     if prolog.query("seguro(%s, %s)"%(x+1,y)) != {}:
         print 'Entrei'
@@ -189,7 +189,7 @@ def assert_pode_ter_poco(x, y):
     if prolog.query("seguro(%s, %s)"%(x,y-1)) != {}:
         print 'Entrei'
         prolog.assertz("pode_ter_poco(%s,%s)" %(x,y-1))
-assert_pode_ter_poco(1,1)
+#assert_pode_ter_poco(1,1)
         
 def ret_sentiu_fedor(x, y):
     sentiu_fedor = list(prolog.query("sentiu_fedor(%s,%s)"%(x, y)))
@@ -206,13 +206,14 @@ def detecta_parede(x,y):
     eh_parede = list(prolog.query("parede(%s,%s)" %(x,y)))
     if (len(eh_parede)==0):
             print 'n era parede'
-            return False
+            return False   
     return True
             
 def faz_percepcao():
     x, y, d = acha_coordenada_arqueiro()
     percebeu = list(prolog.query("sentiu_alguma_coisa(%s, %s)" %(x,y)))
     if len(percebeu) == 0:
+        print 'percebeu nada' ,x ,y
         return False, False, False, False
     
     sentiu_brisa = ret_sentiu_brisa_poco(x,y)
@@ -229,8 +230,8 @@ def cosulta_database(x, y):
     poco = list(prolog.query("poco(%s,%s)"%(x, y)))
     inimigo = list(prolog.query("inimigo(_,_,%s,%s)"%(x, y)))
     return parede, ouro, poco, inimigo
-cosulta_database(1,1)
-print faz_percepcao()
+#cosulta_database(1,1)
+#print faz_percepcao()
 #pensando no q faço com ele
 def agente(x,y, olhando_para):
     posx_atual = x
@@ -238,7 +239,7 @@ def agente(x,y, olhando_para):
     virado = olhando_para
     
 #só a função q faz o bixo virar ingame
-def movimento_virar(olhando_para,novo):
+def movimento_virar(olhando_para):
     '''
     Define uma função para modificar o 'campo de visão' do arqueiro.
     Pensando na ordem wasd, w=norte e tal.
@@ -251,6 +252,7 @@ def movimento_virar(olhando_para,novo):
                 olhando_para = 'sul'
                 if novo == 'leste':
                     olhando_para = 'leste'
+    return novo
                     
 #usa no 'tabuleiro' depois com o python lá em cima      ESSA FUNÇÃO É PRO PYTHON ACHO DEPOIS VAMO PRECISA DE ALGO ASSIM
 def arqueiro_anda_py(X,Y,virado_para):
@@ -283,19 +285,48 @@ def munda_local_arqueiro(x, y, xx, yy, direcao):
         return True
     return False
 
-def arqueiro_anda_while(x,y,direcao):
+
+'''
+  ********************
+  Função de andar 
+  Pensei em chamar uma vez para cada passo, cada vez ele checka o adjacente que ta virado se é seguro/parede e tenta andar.
+  
+  
+  ********************
+ 
+'''
+def arqueiro_anda_while():
     tentou_andar = 0 
-    max_repeticao = 1000
+    max_repeticao = 4
     cont_repeticao = 0
+    x,y,direcao = acha_coordenada_arqueiro()    
+    print list(prolog.query("seguro(2,1)")), "(2,1) seguro acho"
+    print list(prolog.query("seguro(1,2)")) , "(1,2) seguro acho"
+    percepcao, sentiu_brisa, sentiu_fedor, sentiu_brilho = faz_percepcao()
+    if percepcao == True:
+        print 'Faz os devidos asserts'
+            
+        #ADJACENTES SÃO SEGUROS PARA ANDAR
+        if (len(list(prolog.query("seguro(%s,%s)"%(x+1,y)))==0)):
+            if (not detecta_parede(x+1,y)):
+                prolog.assertz("seguro(%s,%s)"%(x+1,y))
+        if (len(list(prolog.query("seguro(%s,%s)"%(x-1,y)))==0)):
+            if (not detecta_parede(x-1,y)):
+                prolog.assertz("seguro(%s,%s)"%(x-1,y))
+        if (len(list(prolog.query("seguro(%s,%s)"%(x,y+1)))==0)):
+            if (not detecta_parede(x,y+1)):
+                prolog.assertz("seguro(%s,%s)"%(x,y+1))
+        if (len(list(prolog.query("seguro(%s,%s)"%(x,y-1)))==0)):
+            if (not detecta_parede(x,y-1)):
+                prolog.assertz("seguro(%s,%s)"%(x,y-1))
+            
     
     while(True):
-        percepcao, sentiu_brisa, sentiu_fedor, sentiu_brilho = faz_percepcao()
-        if percepcao == True:
-            print 'Faz os devidos asserts'
+
             
         if cont_repeticao >= max_repeticao:
             return 'Repeticao maxima'
-        elif tentou_andar > 100:
+        elif tentou_andar > 3:
             return 'Sai tentando andar'
 
         if (direcao == 'norte'):
@@ -303,8 +334,9 @@ def arqueiro_anda_while(x,y,direcao):
                 if munda_local_arqueiro(x,y,x-1, y, direcao) == True:
                     tentou_andar=0
                     print'andou norte'
+                    return True
             else:
-                print'else para oeste'
+                print'virou oeste'
                 direcao = 'oeste' #arqueiro_anda(x,y,'oeste')
                 tentou_andar=tentou_andar+1
         if(direcao == 'sul'):
@@ -312,17 +344,21 @@ def arqueiro_anda_while(x,y,direcao):
                 if munda_local_arqueiro(x,y,x+1, y, direcao) == True:
                     tentou_andar=0
                     print'andou sul'
+                    return True
             else:
-                print'else para leste'
+                print'virou leste'
                 direcao = 'leste' #arqueiro_anda(x,y, 'leste')
                 tentou_andar=tentou_andar+1
         if(direcao == 'leste'):
             if (len(list(prolog.query("seguro(%s,%s)" %(x,y+1))))>0):
                 if munda_local_arqueiro(x,y,x, y+1, direcao) == True:
                     tentou_andar=0
+                    #print list(prolog.query("sentiu_alguma_coisa(2,1)")) , 'sera'
+                    #print list(prolog.query("seguro(2,1)")), 'por favor funciona'
                     print'andou leste'
+                    return True
             else:
-                print'else para norte'
+                print'virou norte'
                 direcao = 'norte' #arqueiro_anda(x,y,'norte')
                 tentou_andar=tentou_andar+1
         if (direcao == 'oeste'):
@@ -330,12 +366,17 @@ def arqueiro_anda_while(x,y,direcao):
                 if munda_local_arqueiro(x,y,x, y-1, direcao) == True:
                     tentou_andar=0
                     print'andou oeste'
+                    return True
             else:
-                print'else para sult'
+                print'virou sul'
                 direcao = 'sul' #arqueiro_anda(x,y,'sul')
                 tentou_andar=tentou_andar + 1
         cont_repeticao = cont_repeticao + 1
                 
+        
+        
+        ##FUNÇÃO LIXO JOGA PRA LÁ
+        '''
 def arqueiro_anda(x,y,direcao):
     if tentou_andar > 100:
         return
@@ -370,7 +411,8 @@ def arqueiro_anda(x,y,direcao):
     if(direcao == 'leste'):
         if (len(list(prolog.query("seguro(%s,%s)" %(x,y+1))))>0):
             if(not detecta_parede(x,y+1)):
-                prolog.query("retract(local_arqueiro(%s, %s))" %(x,y))
+                print 'entro aqui'
+                print prolog.query("retract(local_arqueiro(%s, %s))" %(x,y)) , ''
                 prolog.assertz("local_arqueiro(%s,%s)" %(x,y+1))
                 if ((len(list(prolog.query("visitadas(%s,%s)" %(x,y+1)))))==0):
                     prolog.assertz("visitadas(%s,%s)" %(x,y+1))
@@ -392,12 +434,12 @@ def arqueiro_anda(x,y,direcao):
                 tentou_andar=0
                 print'andou oeste'
         else:
-            print'else para sult'
+            print'else para sul'
             arqueiro_anda(x,y,'sul')
             tentou_andar=tentou_andar+1
                 
             
-arqueiro_anda_while(5,6,'sul')
+            '''
 #função usada pela arqueiro_anda
 #ela descobre paredes adjacentes ao arqueiro e coloca no db
 def descobre_parede_adjacente(x,y):
@@ -409,8 +451,20 @@ def descobre_parede_adjacente(x,y):
         prolog.assertz("parede(%s,%s)" %(x,y-1))
     elif(y==12):
         prolog.assertz("parede(%s,%s)"%(x,y+1))
+    return True
 
 
+
+prolog.assertz("seguro(1,2)")
+prolog.assertz("local_arqueiro(1, 1, oeste)")
+arqueiro_anda_while()
+print list(prolog.query("local_arqueiro(X,Y,D)"))
+print 'mudo algo'
+#prolog.query("retract(local_arqueiro(1,1,oeste))")
+print list(prolog.query("local_arqueiro(X,Y,D)"))
+
+#prolog.query("retract(seguro(1,2))")
+#prolog.query("retract(seguro(2,1))")
 ###COPIA A FUNCAO
 def percepcoes_ativa(x,y):
     percebeu = list(prolog.query("sentiu_alguma_coisa(%s, %s)" %(x,y)))
