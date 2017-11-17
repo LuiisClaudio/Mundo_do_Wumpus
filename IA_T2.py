@@ -276,7 +276,7 @@ def arqueiro_anda_py(X,Y,virado_para):
 def munda_local_arqueiro(x, y, xx, yy, direcao):
     if(not detecta_parede(xx,yy)):
         prolog.query("retract(local_arqueiro(%s, %s, %s))" %(x,y,direcao))
-        prolog.assertz("local_arqueiro(%s,%s)" %(xx,yy, direcao))
+        prolog.assertz("local_arqueiro(%s,%s, %s)" %(xx,yy, direcao))
         if ((len(list(prolog.query("visitadas(%s,%s)" %(xx,yy)))))==0):
             prolog.assertz("visitadas(%s,%s)" %(xx,yy))
         descobre_parede_adjacente(xx, yy)
