@@ -38,7 +38,6 @@ def preenche_database(mapa_wumpus):
     i = 0
     j = 0
     with open('test.pl', "w") as myfile:
-        myfile.write('Teste\n')
         for linha in mapa_wumpus:
             for fato in linha:
                 if fato >= -5000 and fato <= -4950:
