@@ -1,10 +1,5 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
-"""
-Created on Sat Nov 18 15:57:35 2017
-
-@author: LuisClaudio
-"""
 
 def py_assert(pl_file, command):
     with open(pl_file, "a") as myfile:
