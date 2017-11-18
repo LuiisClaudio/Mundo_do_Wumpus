@@ -32,9 +32,7 @@ def print_file(pl_file):
     for i in d:
         print i
     f.close()
-#py_assert('database.pl', "fato(1,1).")
-#py_retract('database.pl', "parede")
-#print_file('database.pl')
+
 
 def preenche_database(mapa_wumpus):
     i = 0
@@ -44,16 +42,16 @@ def preenche_database(mapa_wumpus):
         for linha in mapa_wumpus:
             for fato in linha:
                 if fato >= -5000 and fato <= -4950:
-                    myfile.write('parede(%s, %s).\n' %(i, j))
+                    myfile.write('parede(%s,%s).\n' %(i, j))
                     
                 elif fato >= 45 and fato <= 155:
-                    myfile.write('inimigo(%s, %s, 20, 100).\n' %(i, j))
+                    myfile.write('inimigo(%s,%s,20,100).\n' %(i, j))
                 elif fato >= 445 and fato <= 555:
-                    myfile.write('inimigo(%s, %s, 50, 100).\n' %(i, j))
+                    myfile.write('inimigo(%s,%s,50,100).\n' %(i, j))
                 elif fato >= -300 and fato <= -245:
-                    myfile.write('buraco(%s, %s).\n' %(i, j))
+                    myfile.write('buraco(%s,%s).\n' %(i, j))
                 elif fato >= 8000:
-                    myfile.write('ouro(%s, %s).\n' %(i, j))
+                    myfile.write('ouro(%s,%s).\n' %(i, j))
                 j = j + 1
             j = 0
             i = i + 1
@@ -170,6 +168,8 @@ def cria_caverna():
     print 'Buracos:' ,buracao , '\tInimigos com 20 de dano:', inimigos_20, '\tInimigos com 50 de dano:', inimigos_50, '\tGold:', gold_ingodo 
     preenche_database(Tabuleiro)
 cria_caverna()
-py_retract('test.pl', "parede")
+py_retract('test.pl', "parede(13,13).")
+py_assert('test.pl', "test_assert(13,13).")
+py_assert('test.pl', "test_assert(13,13).")
 print_file('test.pl')
 
