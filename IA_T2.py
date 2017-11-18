@@ -193,13 +193,14 @@ def detecta_parede(x,y):
     return True
             
 def faz_percepcao():
+    'entrou na percepcao'
     prolog.consult('database.pl')
     x, y, d = acha_coordenada_arqueiro()
     percebeu = list(prolog.query("sentiu_alguma_coisa(%s, %s)" %(x,y)))
     if len(percebeu) == 0:
         print 'percebeu nada' ,x ,y
         return False, False, False, False
-    
+    print 'PERCEBEU ALGUMA COISA NESSA PORRA'
     sentiu_brisa = ret_sentiu_brisa_poco(x,y)
     print 'Brisa ', sentiu_brisa 
     sentiu_fedor = ret_sentiu_fedor(x,y)
@@ -266,8 +267,8 @@ def munda_local_arqueiro(x, y, xx, yy, direcao):
         py_retract('database.pl',"local_arqueiro")
         py_assert('database.pl',"local_arqueiro(%s,%s,%s)." %(xx,yy, direcao))
         prolog.consult('database.pl')
-        if ((len(list(prolog.query("visitadas(%s,%s)" %(xx,yy)))))==0):
-            py_assert('database.pl',"visitadas(%s,%s)." %(xx,yy))
+        #if ((len(list(prolog.query("visitadas(%s,%s)" %(xx,yy)))))==0):
+        py_assert('database.pl',"visitadas(%s,%s)." %(xx,yy))
         descobre_parede_adjacente(xx, yy)
         return True
     return False
@@ -290,11 +291,9 @@ def arqueiro_anda_while():
     print list(prolog.query("seguro(2,1)")), "(2,1) seguro acho"
     print list(prolog.query("seguro(1,2)")) , "(1,2) seguro acho"
     percepcao, sentiu_brisa, sentiu_fedor, sentiu_brilho = faz_percepcao()
-    if percepcao == True:
+    if percepcao == False:
         print 'Faz os devidos asserts'
         #ADJACENTES SÃO SEGUROS PARA ANDAR
-    
-        prin
         if (not detecta_parede(x+1,y)):
             py_assert('database.pl',"seguro(%s,%s)."%(x+1,y))
  
@@ -382,7 +381,35 @@ AQUI EM BAIXO FICAM OS TESTES DO CÓDIGO
 ***************************************
 '''
 
-py_assert('database.pl',"seguro(1,2).")
+py_assert('database.pl',"seguro(1,2).") 
+py_assert('database.pl',"seguro(1,3).")
+py_assert('database.pl',"seguro(1,4).")
+py_assert('database.pl',"seguro(2,4).")
 py_assert('database.pl',"local_arqueiro(1,1,oeste).")
 prolog.consult('database.pl')
 arqueiro_anda_while()
+prolog.consult('database.pl')
+arqueiro_anda_while()
+prolog.consult('database.pl')
+arqueiro_anda_while()
+prolog.consult('database.pl')
+arqueiro_anda_while()
+prolog.consult('database.pl')
+arqueiro_anda_while()
+prolog.consult('database.pl')
+arqueiro_anda_while()
+prolog.consult('database.pl')
+arqueiro_anda_while()
+prolog.consult('database.pl')
+arqueiro_anda_while()
+prolog.consult('database.pl')
+arqueiro_anda_while()
+prolog.consult('database.pl')
+arqueiro_anda_while()
+prolog.consult('database.pl')
+arqueiro_anda_while()
+prolog.consult('database.pl')
+arqueiro_anda_while()
+prolog.consult('database.pl')
+arqueiro_anda_while()
+prolog.consult('database.pl')
