@@ -1,4 +1,6 @@
+# -*- coding: utf-8 -*-
 import random
+from aux_pyswip import py_assert, py_retract, preenche_database
 def cria_caverna():
     
     
@@ -87,33 +89,7 @@ def cria_caverna():
             lista_locais_usados.append(copy_novo)
             print(lista_locais_usados)
             Tabuleiro[lin_num][col_num] = Tabuleiro[lin_num][col_num]+8000
-            gold_ingodo = gold_ingodo+1
-
-    '''
-    me ajudou a fazer os bixo e tal, deixa salvo pra ajudar depois
-    while (contador <15):
-        new_local=[]
-        col_num = random.randint(1,12)
-        lin_num = random.randint(1,12)
-        new_local.append(col_num)
-        new_local.append(lin_num)
-        if new_local not in lista_locais_usados:
-            copy_novo = new_local
-            lista_locais_usados.append(copy_novo)
-            print(lista_locais_usados)
-            Tabuleiro[lin_num][col_num] = Tabuleiro[lin_num][col_num]+100
-            contador = contador+1
-    
-                
-    protótipo de brisa e as paradas, me ajudou a colocar as brisas e mal cheiros
-    for i in range(13):
-        for j in range(13):
-            if Tabuleiro[i][j]>30:
-                Tabuleiro[i-1][j] = Tabuleiro[i-1][j]+7
-                Tabuleiro[i][j-1] = Tabuleiro[i][j-1]+7
-                Tabuleiro[i+1][j] = Tabuleiro[i+1][j]+7
-                Tabuleiro[i][j+1] = Tabuleiro[i][j+1]+7
-    '''        
+            gold_ingodo = gold_ingodo+1      
 
     for i in range(13):
         for j in range(13):
@@ -132,7 +108,7 @@ def cria_caverna():
     for i in Tabuleiro:
         print i
     print 'Buracos:' ,buracao , '\tInimigos com 20 de dano:', inimigos_20, '\tInimigos com 50 de dano:', inimigos_50, '\tGold:', gold_ingodo 
-
+    preenche_database(Tabuleiro)
 cria_caverna()
 
 
@@ -305,7 +281,8 @@ def arqueiro_anda_while():
     percepcao, sentiu_brisa, sentiu_fedor, sentiu_brilho = faz_percepcao()
     if percepcao == True:
         print 'Faz os devidos asserts'
-            
+
+        '''    
         #ADJACENTES SÃO SEGUROS PARA ANDAR
         if (len(list(prolog.query("seguro(%s,%s)"%(x+1,y)))==0)):
             if (not detecta_parede(x+1,y)):
@@ -319,7 +296,7 @@ def arqueiro_anda_while():
         if (len(list(prolog.query("seguro(%s,%s)"%(x,y-1)))==0)):
             if (not detecta_parede(x,y-1)):
                 prolog.assertz("seguro(%s,%s)"%(x,y-1))
-            
+        '''   
     
     while(True):
 
@@ -374,72 +351,7 @@ def arqueiro_anda_while():
         cont_repeticao = cont_repeticao + 1
                 
         
-        
-        ##FUNÇÃO LIXO JOGA PRA LÁ
-        '''
-def arqueiro_anda(x,y,direcao):
-    if tentou_andar > 100:
-        return
-    if (direcao == 'norte'):
-        if (len(list(prolog.query("seguro(%s,%s)" %(x-1,y))))>0):
-            if(not detecta_parede(x-1,y)):
-                prolog.query("retract(local_arqueiro(%s, %s))" %(x,y))
-                prolog.assertz("local_arqueiro(%s,%s)" %(x-1,y))
-                if ((len(list(prolog.query("visitadas(%s,%s)" %(x-1,y)))))==0):
-                    prolog.assertz("visitadas(%s,%s)" %(x-1,y))
-                descobre_parede_adjacente(x-1,y)
-                tentou_andar=0
-                print'andou norte'
-        else:
-            print'else para oeste'
-            arqueiro_anda(x,y,'oeste')
-            tentou_andar=tentou_andar+1
-    if(direcao == 'sul'):
-        if (len(list(prolog.query("seguro(%s,%s)" %(x+1,y))))>0):
-            if(not detecta_parede(x+1,y)):
-                prolog.query("retract(local_arqueiro(%s, %s))" %(x,y))
-                prolog.assertz("local_arqueiro(%s,%s)" %(x+1,y))
-                if ((len(list(prolog.query("visitadas(%s,%s)" %(x+1,y)))))==0):
-                    prolog.assertz("visitadas(%s,%s)" %(x+1,y))
-                descobre_parede_adjacente(x+1,y)
-                tentou_andar=0
-                print'andou sul'
-        else:
-            print'else para leste'
-            arqueiro_anda(x,y, 'leste')
-            tentou_andar=tentou_andar+1
-    if(direcao == 'leste'):
-        if (len(list(prolog.query("seguro(%s,%s)" %(x,y+1))))>0):
-            if(not detecta_parede(x,y+1)):
-                print 'entro aqui'
-                print prolog.query("retract(local_arqueiro(%s, %s))" %(x,y)) , ''
-                prolog.assertz("local_arqueiro(%s,%s)" %(x,y+1))
-                if ((len(list(prolog.query("visitadas(%s,%s)" %(x,y+1)))))==0):
-                    prolog.assertz("visitadas(%s,%s)" %(x,y+1))
-                descobre_parede_adjacente(x,y+1)
-                tentou_andar=0
-                print'andou leste'
-        else:
-            print'else para norte'
-            arqueiro_anda(x,y,'norte')
-            tentou_andar=tentou_andar+1
-    if (direcao == 'oeste'):
-        if (len(list(prolog.query("seguro(%s,%s)" %(x,y-1))))>0):
-            if(not detecta_parede(x,y-1)):
-                prolog.query("retract(local_arqueiro(%s, %s))" %(x,y))
-                prolog.assertz("local_arqueiro(%s,%s)" %(x,y-1))
-                if ((len(list(prolog.query("visitadas(%s,%s)" %(x,y-1)))))==0):
-                    prolog.assertz("visitadas(%s,%s)" %(x,y-1))
-                descobre_parede_adjacente(x,y-1)
-                tentou_andar=0
-                print'andou oeste'
-        else:
-            print'else para sul'
-            arqueiro_anda(x,y,'sul')
-            tentou_andar=tentou_andar+1
-                
             
-            '''
 #função usada pela arqueiro_anda
 #ela descobre paredes adjacentes ao arqueiro e coloca no db
 def descobre_parede_adjacente(x,y):
@@ -455,16 +367,7 @@ def descobre_parede_adjacente(x,y):
 
 
 
-prolog.assertz("seguro(1,2)")
-prolog.assertz("local_arqueiro(1, 1, oeste)")
-arqueiro_anda_while()
-print list(prolog.query("local_arqueiro(X,Y,D)"))
-print 'mudo algo'
-#prolog.query("retract(local_arqueiro(1,1,oeste))")
-print list(prolog.query("local_arqueiro(X,Y,D)"))
 
-#prolog.query("retract(seguro(1,2))")
-#prolog.query("retract(seguro(2,1))")
 ###COPIA A FUNCAO
 def percepcoes_ativa(x,y):
     percebeu = list(prolog.query("sentiu_alguma_coisa(%s, %s)" %(x,y)))
