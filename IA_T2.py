@@ -119,8 +119,7 @@ tentou_andar=0
 prolog.consult('database.pl')
 prolog.consult('Mundo_do_Wumpus.pl')
 def acha_coordenada_arqueiro():
-    #prolog.consult('database.pl')
-    #prolog.consult('Mundo_do_Wumpus.pl')
+    prolog.consult('database.pl')
     local_atual = list(prolog.query("local_arqueiro(X,Y, D)"))
     if len(local_atual) == 0:
         return False, False, False
@@ -131,6 +130,7 @@ def acha_coordenada_arqueiro():
 #print acha_coordenada_arqueiro()
     
 def ret_sentiu_brisa_poco(x, y):
+    prolog.consult('database.pl')
     sente_brisa = list(prolog.query("sentiu_brisa_poco(%s,%s)"%(x, y)))
     if len(sente_brisa) == 0:
         return False
@@ -168,17 +168,21 @@ def assert_pode_ter_poco(x, y):
 #assert_pode_ter_poco(1,1)
         
 def ret_sentiu_fedor(x, y):
+    prolog.consult('database.pl')
     sentiu_fedor = list(prolog.query("sentiu_fedor(%s,%s)"%(x, y)))
     if len(sentiu_fedor) == 0:
         return False
     return True
+
 def ret_sentiu_brilho(x, y):
+    prolog.consult('database.pl')
     sentiu_brilho = list(prolog.query("ouro(%s,%s)"%(x, y)))
     if len(sentiu_brilho) == 0:
         return False
     return True
 
 def detecta_parede(x,y):
+    prolog.consult('database.pl')
     eh_parede = list(prolog.query("parede(%s,%s)" %(x,y)))
     if (len(eh_parede)==0):
             print 'n era parede'
@@ -186,6 +190,7 @@ def detecta_parede(x,y):
     return True
             
 def faz_percepcao():
+    prolog.consult('database.pl')
     x, y, d = acha_coordenada_arqueiro()
     percebeu = list(prolog.query("sentiu_alguma_coisa(%s, %s)" %(x,y)))
     if len(percebeu) == 0:
@@ -201,11 +206,13 @@ def faz_percepcao():
     return True, sentiu_brisa, sentiu_fedor, sentiu_brilho
 
 def cosulta_database(x, y):
+    prolog.consult('database.pl')
     parede = list(prolog.query("parede(%s,%s)"%(x, y)))
     ouro = list(prolog.query("ouro(%s,%s)"%(x, y)))
     poco = list(prolog.query("poco(%s,%s)"%(x, y)))
     inimigo = list(prolog.query("inimigo(_,_,%s,%s)"%(x, y)))
     return parede, ouro, poco, inimigo
+
 #cosulta_database(1,1)
 #print faz_percepcao()
 #pensando no q faço com ele
