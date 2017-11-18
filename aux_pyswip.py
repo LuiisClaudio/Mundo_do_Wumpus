@@ -44,7 +44,7 @@ def preenche_database(mapa_wumpus):
         for linha in mapa_wumpus:
             for fato in linha:
                 if fato >= -5000 and fato <= -4950:
-                    myfile.write('parade(%s, %s).\n' %(i, j))
+                    myfile.write('parede(%s, %s).\n' %(i, j))
                     
                 elif fato >= 45 and fato <= 155:
                     myfile.write('inimigo(%s, %s, 20, 100).\n' %(i, j))
@@ -170,6 +170,6 @@ def cria_caverna():
     print 'Buracos:' ,buracao , '\tInimigos com 20 de dano:', inimigos_20, '\tInimigos com 50 de dano:', inimigos_50, '\tGold:', gold_ingodo 
     preenche_database(Tabuleiro)
 cria_caverna()
-py_retract('database.pl', "vazia")
+py_retract('test.pl', "parede")
 print_file('test.pl')
 
