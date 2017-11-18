@@ -116,8 +116,8 @@ cria_caverna()
 from pyswip import Prolog
 prolog = Prolog()
 tentou_andar=0
-prolog.consult('C:/Users/IGOR/Desktop/Mundo_do_Wumpus.pl')
-prolog.consult('C:/Users/IGOR/Desktop/database.pl')
+prolog.consult('Mundo_do_Wumpus.pl')
+prolog.consult('database.pl')
 
 def acha_coordenada_arqueiro():
     prolog.consult('database.pl')
@@ -263,8 +263,8 @@ def arqueiro_anda_py(X,Y,virado_para):
 '''
 def munda_local_arqueiro(x, y, xx, yy, direcao):
     if(not detecta_parede(xx,yy)):
-        prolog.query("retract(local_arqueiro(%s, %s, %s))" %(x,y,direcao))
-        py_assert('database.pl',"local_arqueiro(%s,%s, %s)." %(xx,yy, direcao))
+        py_retract('database.pl',"local_arqueiro")
+        py_assert('database.pl',"local_arqueiro(%s,%s,%s)." %(xx,yy, direcao))
         prolog.consult('database.pl')
         if ((len(list(prolog.query("visitadas(%s,%s)" %(xx,yy)))))==0):
             py_assert('database.pl',"visitadas(%s,%s)." %(xx,yy))
@@ -294,7 +294,7 @@ def arqueiro_anda_while():
         print 'Faz os devidos asserts'
         #ADJACENTES SÃO SEGUROS PARA ANDAR
     
-        
+        prin
         if (not detecta_parede(x+1,y)):
             py_assert('database.pl',"seguro(%s,%s)."%(x+1,y))
  
@@ -310,7 +310,7 @@ def arqueiro_anda_while():
     
     while(True):
 
-            
+        print x,'   ', y,  'sao as coord'
         if cont_repeticao >= max_repeticao:
             return 'Repeticao maxima'
         elif tentou_andar > 3:
@@ -383,6 +383,6 @@ AQUI EM BAIXO FICAM OS TESTES DO CÓDIGO
 '''
 
 py_assert('database.pl',"seguro(1,2).")
-py_assert('database.pl',"local_arqueiro(1, 1, oeste).")
+py_assert('database.pl',"local_arqueiro(1,1,oeste).")
 prolog.consult('database.pl')
 arqueiro_anda_while()
