@@ -89,7 +89,8 @@ def cria_caverna():
             lista_locais_usados.append(copy_novo)
             print(lista_locais_usados)
             Tabuleiro[lin_num][col_num] = Tabuleiro[lin_num][col_num]+8000
-            gold_ingodo = gold_ingodo+1      
+            gold_ingodo = gold_ingodo+1
+
 
     for i in range(13):
         for j in range(13):
@@ -111,13 +112,13 @@ def cria_caverna():
     preenche_database(Tabuleiro)
 cria_caverna()
 
-
-#isso aqui precisa estar no database, e é um começo para o prolog
+#isso aqui precisa estar no database, e é um começo para o prolog]
 from pyswip import Prolog
 prolog = Prolog()
 tentou_andar=0
-prolog.consult('database.pl')
-prolog.consult('Mundo_do_Wumpus.pl')
+prolog.consult('C:/Users/IGOR/Desktop/Mundo_do_Wumpus.pl')
+prolog.consult('C:/Users/IGOR/Desktop/database.pl')
+
 def acha_coordenada_arqueiro():
     prolog.consult('database.pl')
     local_atual = list(prolog.query("local_arqueiro(X,Y, D)"))
@@ -137,34 +138,36 @@ def ret_sentiu_brisa_poco(x, y):
     return True
 
 def assert_pode_ter_inimigo(x, y):
+    prolog.consult('database.pl')
     if prolog.query("seguro(%s, %s)"%(x+1,y)) != {}:
         print 'Entrei'
-        prolog.assertz("pode_ter_inimigo(%s,%s)" %(x+1,y))
+        py_assert('database.pl',"pode_ter_inimigo(%s,%s)." %(x+1,y))
     if prolog.query("seguro(%s, %s)"%(x-1, y)) != {}:
         print 'Entrei'
-        prolog.assertz("pode_ter_inimigo(%s,%s)" %(x-1, y))
+        py_assert('database.pl',"pode_ter_inimigo(%s,%s)." %(x-1, y))
     if prolog.query("seguro(%s, %s)"%(x,y+1)) != {}:
         print 'Entrei'
-        prolog.assertz("pode_ter_inimigo(%s,%s)" %(x,y+1))
+        py_assert('database.pl',"pode_ter_inimigo(%s,%s)." %(x,y+1))
     if prolog.query("seguro(%s, %s)"%(x,y-1)) != {}:
         print 'Entrei'
-        prolog.assertz("pode_ter_inimigo(%s,%s)" %(x,y-1))
+        py_assert('database.pl',"pode_ter_inimigo(%s,%s)." %(x,y-1))
 #assert_pode_ter_inimigo(1,1)
 
 
 def assert_pode_ter_poco(x, y):
+    prolog.consult('database.pl')
     if prolog.query("seguro(%s, %s)"%(x+1,y)) != {}:
         print 'Entrei'
-        prolog.assertz("pode_ter_poco(%s,%s)" %(x+1,y))
+        py_assert('database.pl',"pode_ter_poco(%s,%s)." %(x+1,y))
     if prolog.query("seguro(%s, %s)"%(x-1, y)) != {}:
         print 'Entrei'
-        prolog.assertz("pode_ter_poco(%s,%s)" %(x-1, y))
+        py_assert('database.pl',"pode_ter_poco(%s,%s)." %(x-1, y))
     if prolog.query("seguro(%s, %s)"%(x,y+1)) != {}:
         print 'Entrei'
-        prolog.assertz("pode_ter_poco(%s,%s)" %(x,y+1))
+        py_assert('database.pl',"pode_ter_poco(%s,%s)." %(x,y+1))
     if prolog.query("seguro(%s, %s)"%(x,y-1)) != {}:
         print 'Entrei'
-        prolog.assertz("pode_ter_poco(%s,%s)" %(x,y-1))
+        py_assert('database.pl',"pode_ter_poco(%s,%s)." %(x,y-1))
 #assert_pode_ter_poco(1,1)
         
 def ret_sentiu_fedor(x, y):
@@ -261,9 +264,10 @@ def arqueiro_anda_py(X,Y,virado_para):
 def munda_local_arqueiro(x, y, xx, yy, direcao):
     if(not detecta_parede(xx,yy)):
         prolog.query("retract(local_arqueiro(%s, %s, %s))" %(x,y,direcao))
-        prolog.assertz("local_arqueiro(%s,%s, %s)" %(xx,yy, direcao))
+        py_assert('database.pl',"local_arqueiro(%s,%s, %s)." %(xx,yy, direcao))
+        prolog.consult('database.pl')
         if ((len(list(prolog.query("visitadas(%s,%s)" %(xx,yy)))))==0):
-            prolog.assertz("visitadas(%s,%s)" %(xx,yy))
+            py_assert('database.pl',"visitadas(%s,%s)." %(xx,yy))
         descobre_parede_adjacente(xx, yy)
         return True
     return False
@@ -282,28 +286,27 @@ def arqueiro_anda_while():
     tentou_andar = 0 
     max_repeticao = 4
     cont_repeticao = 0
-    x,y,direcao = acha_coordenada_arqueiro()    
+    x,y,direcao = acha_coordenada_arqueiro()
     print list(prolog.query("seguro(2,1)")), "(2,1) seguro acho"
     print list(prolog.query("seguro(1,2)")) , "(1,2) seguro acho"
     percepcao, sentiu_brisa, sentiu_fedor, sentiu_brilho = faz_percepcao()
     if percepcao == True:
         print 'Faz os devidos asserts'
-
-        '''    
         #ADJACENTES SÃO SEGUROS PARA ANDAR
-        if (len(list(prolog.query("seguro(%s,%s)"%(x+1,y)))==0)):
-            if (not detecta_parede(x+1,y)):
-                prolog.assertz("seguro(%s,%s)"%(x+1,y))
-        if (len(list(prolog.query("seguro(%s,%s)"%(x-1,y)))==0)):
-            if (not detecta_parede(x-1,y)):
-                prolog.assertz("seguro(%s,%s)"%(x-1,y))
-        if (len(list(prolog.query("seguro(%s,%s)"%(x,y+1)))==0)):
-            if (not detecta_parede(x,y+1)):
-                prolog.assertz("seguro(%s,%s)"%(x,y+1))
-        if (len(list(prolog.query("seguro(%s,%s)"%(x,y-1)))==0)):
-            if (not detecta_parede(x,y-1)):
-                prolog.assertz("seguro(%s,%s)"%(x,y-1))
-        '''   
+    
+        
+        if (not detecta_parede(x+1,y)):
+            py_assert('database.pl',"seguro(%s,%s)."%(x+1,y))
+ 
+        if (not detecta_parede(x-1,y)):
+            py_assert('database.pl',"seguro(%s,%s)."%(x-1,y))
+
+        if (not detecta_parede(x,y+1)):
+            py_assert('database.pl',"seguro(%s,%s)."%(x,y+1))
+
+        if (not detecta_parede(x,y-1)):
+            py_assert('database.pl',"seguro(%s,%s)."%(x,y-1))
+            
     
     while(True):
 
@@ -312,7 +315,8 @@ def arqueiro_anda_while():
             return 'Repeticao maxima'
         elif tentou_andar > 3:
             return 'Sai tentando andar'
-
+        prolog.consult('database.pl')
+        
         if (direcao == 'norte'):
             if (len(list(prolog.query("seguro(%s,%s)" %(x-1,y))))>0):
                 if munda_local_arqueiro(x,y,x-1, y, direcao) == True:
@@ -357,61 +361,28 @@ def arqueiro_anda_while():
                 tentou_andar=tentou_andar + 1
         cont_repeticao = cont_repeticao + 1
                 
-        
-            
+
+
 #função usada pela arqueiro_anda
 #ela descobre paredes adjacentes ao arqueiro e coloca no db
 def descobre_parede_adjacente(x,y):
     if(x==1):
-        prolog.assertz("parede(%s, %s)" %(x-1,y))
+        py_assert('database.pl',"parede(%s, %s)." %(x-1,y))
     elif(x==12):
-        prolog.assertz("parede(%s, %s)" %(x+1, y))
+        py_assert('database.pl',"parede(%s, %s)." %(x+1, y))
     if(y==1):
-        prolog.assertz("parede(%s,%s)" %(x,y-1))
+        py_assert('database.pl',"parede(%s,%s)." %(x,y-1))
     elif(y==12):
-        prolog.assertz("parede(%s,%s)"%(x,y+1))
+        py_assert('database.pl',"parede(%s,%s)."%(x,y+1))
     return True
 
+'''
+***************************************
+AQUI EM BAIXO FICAM OS TESTES DO CÓDIGO 
+***************************************
+'''
 
-
-
-###COPIA A FUNCAO
-def percepcoes_ativa(x,y):
-    percebeu = list(prolog.query("sentiu_alguma_coisa(%s, %s)" %(x,y)))
-    if (len(percebeu)>0):
-        print 'tem algo'
-        percebeu2 = list(prolog.query("sentiu_brisa_poco(%s,%s)" %(x,y)))
-        if len(percebeu2)>0:
-            print 'xd2 '
-            return 'tem_poco_adjacente'
-        percebeu3 = list(prolog.query("sentiu_fedor(%s,%s)" %(x,y)))
-        if len(percebeu3)>0:
-            print 'tem fedor'
-            return 'tem_inimigo_adjacente'
-    else:
-        eh_parede = list(prolog.query("parede(%s,%s)" %(x+1,y)))
-        if (len(eh_parede)==0):
-            print 'n era parede 1'
-            #em baixo tratar depois de uma forma mais decente
-            prolog.query("retract(seguro(%s,%s))" %(x+1,y))
-            prolog.assertz("seguro(%s,%s)" %(x+1,y))
-        eh_parede2 = list(prolog.query("parede(%s,%s)" %(x-1,y)))
-        if (len(eh_parede2)==0):
-            print 'n era parede2'
-            #em baixo tratar depois de uma forma mais decente
-            prolog.query("retract(seguro(%s,%s))" %(x-1,y))
-            prolog.assertz("seguro(%s,%s)" %(x-1, y))
-        eh_parede3 = list(prolog.query("parede(%s,%s)" %(x,y+1)))
-        if (len(eh_parede3)==0):
-            print 'n era parede3'
-            #em baixo tratar depois de uma forma mais decente
-            prolog.query("retract(seguro(%s,%s))" %(x,y-1))
-            prolog.assertz("seguro(%s,%s)" %(x,y+1))
-        eh_parede4 = list(prolog.query("parede(%s,%s)" %(x,y-1)))
-        if (len(eh_parede4)==0):
-            print 'n era parede4'
-            #em baixo tratar depois de uma forma mais decente
-            prolog.query("retract(seguro(%s,%s))" %(x,y-1))
-            prolog.assertz("seguro(%s,%s)" %(x,y-1))
-        
-
+py_assert('database.pl',"seguro(1,2).")
+py_assert('database.pl',"local_arqueiro(1, 1, oeste).")
+prolog.consult('database.pl')
+arqueiro_anda_while()
