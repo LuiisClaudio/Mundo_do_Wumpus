@@ -14,7 +14,6 @@ parede(protagonista,leste).
 parede(protagonista,oeste).
 
 
-local_arqueiro(1, 1, norte).
 
 
 
@@ -192,7 +191,6 @@ parede(12,13).
 ouro(11,2).
 ouro(3,5).
 ouro(9,11).
-inimigo(20,100,1,2).
 inimigo(20,100,10,2).
 inimigo(50,100,5,6).
 inimigo(20,100,2,9).
@@ -208,4 +206,3 @@ poco(2,11).
 powerup(2,2).
 powerup(7,7).
 powerup(1,12).
-pode_ter_inimigo(1,2).
