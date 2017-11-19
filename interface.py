@@ -1,5 +1,6 @@
-from IA_T2 import cria_caverna, preenche_tabuleiro
-
+# -*- coding: utf-8 -*-
+from pyswip import Prolog
+prolog = Prolog()
 def define_simbolo(fato):
 	if fato >= -5000 and fato <= -4950: #parede
 		return '@'
@@ -27,9 +28,53 @@ def print_list_line2(lst):
         print_line += ' ' + str(i)
     return print_line
 
-def print_tabuleiro():
-    tab = preenche_tabuleiro()
+def preenche_tabuleiro():
+    prolog.consult('database.pl')
+    tab_tam = 14
+    tab = []*tab_tam
+    
+    arqueiro = list(prolog.query("local_arqueiro(X, Y, D)"))
+    poco = list(prolog.query("poco(X, Y)"))
+    inimigo = list(prolog.query("inimigo(Z, W, X, Y)"))
+    ouro = list(prolog.query("ouro(X, Y)"))
+    parede = list(prolog.query("parede(X, Y)"))
+    visitadas = list(prolog.query("visitadas(X, Y)"))
+    
+    #print 'arqueiro', arqueiro
+    #print 'poco', poco
+    #print 'inimigo', inimigo
+    #print 'ouro', ouro
+    #print 'parede', parede
+    #print 'visitadas', visitadas
+    
+    
+    for i in range(tab_tam):
+    	tab.append(['?']*tab_tam)
+    for i in parede:
+        tab[i.get('X')][i.get('Y')] = 'X'
+    for i in visitadas:
+        x = int(i.get('X'))
+        y = int(i.get('Y'))
+        for j in poco:
+            if i.get('X') == j.get('X') and  i.get('Y') == j.get('Y'):
+                tab[x][y] = 'P'
+                #print tab[x][y]
+        for j in inimigo:
+            if i.get('X') == j.get('X') and  i.get('Y') == j.get('Y'):
+                tab[x][y] = 'I'
+                #print tab[x][y]
+        for j in ouro:
+            if i.get('X') == j.get('X') and  i.get('Y') == j.get('Y'):
+                tab[x][y] = 'O'
+                #print tab[x][y]
+                
+    tab[arqueiro[0].get('X')][arqueiro[0].get('Y')] = 'A'
+
+    return tab
+
+
+def print_tabuleiro(tab):
     for linha in tab:
         print print_list_line2(linha)
-print_tabuleiro()
+
 

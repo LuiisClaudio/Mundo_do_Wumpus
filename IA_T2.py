@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import random
-
+from time import sleep
+from interface import print_tabuleiro, preenche_tabuleiro
 
 from aux_pyswip import py_assert, py_retract, preenche_database
 def cria_caverna():
@@ -120,6 +121,8 @@ prolog = Prolog()
 tentou_andar=0
 prolog.consult('Mundo_do_Wumpus.pl')
 prolog.consult('database.pl')
+
+
 
 def caiu_poco():
     prolog.consult('database.pl') 
@@ -601,7 +604,8 @@ AQUI EM BAIXO FICAM OS TESTES DO CÓDIGO
 def main():
     cont = 0
     while(True):
-        if cont < 10:
+        sleep(1)
+        if cont > 10:
             return
         prolog.consult('database.pl')
         pontuacao = list(prolog.query('pontuacao(P)'))
@@ -610,8 +614,10 @@ def main():
             return False
         if(energia[0].get('E') < 0):
             return False
+        print_tabuleiro(preenche_tabuleiro())
+        print '\n\n'
         cont = cont + 1
-
+main()
 #atira()
 #pega_ouro()
 #inimigo_dano(10, 2)
@@ -620,8 +626,8 @@ atualiza_ponto(10)
 
 py_assert('database.pl',"local_arqueiro(1,1,norte).")
 py_assert('database.pl', "visitadas(1,1).")
-for i in range(40):
+'''for i in range(40):
     prolog.consult('database.pl')
     print arqueiro_anda()
     print i
-    print
+    print'''
