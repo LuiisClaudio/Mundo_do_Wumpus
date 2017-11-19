@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import random
+
+
 from aux_pyswip import py_assert, py_retract, preenche_database
 def cria_caverna():
     
@@ -119,6 +121,7 @@ tentou_andar=0
 prolog.consult('Mundo_do_Wumpus.pl')
 prolog.consult('database.pl')
 
+<<<<<<< HEAD
 def direcao_certa(x, y, xx, yy, direcao):
     if direcao == 'norte':
         if xx < x:
@@ -162,6 +165,8 @@ def atira():
                 faz_dano(i.get('X'), i.get('Y'), random.randint(20,50))
     return False
        
+=======
+>>>>>>> a9b6aeeba8eee5c5ee4a774039d05854616d09e0
 def acha_coordenada_arqueiro():
     prolog.consult('database.pl')
     local_atual = list(prolog.query("local_arqueiro(X,Y, D)"))
@@ -171,7 +176,8 @@ def acha_coordenada_arqueiro():
     y = local_atual[0].get("Y")
     direcao = local_atual[0].get("D")
     return x,y,direcao
-atira()
+#print acha_coordenada_arqueiro()
+    
 def ret_sentiu_brisa_poco(x, y):
     prolog.consult('database.pl')
     sente_brisa = list(prolog.query("sentiu_brisa_poco(%s,%s)"%(x, y)))
@@ -309,8 +315,8 @@ def munda_local_arqueiro(x, y, xx, yy, direcao):
         py_retract('database.pl',"local_arqueiro")
         py_assert('database.pl',"local_arqueiro(%s,%s,%s)." %(xx,yy, direcao))
         prolog.consult('database.pl')
-        #if ((len(list(prolog.query("visitadas(%s,%s)" %(xx,yy)))))==0):
-        py_assert('database.pl',"visitadas(%s,%s)." %(xx,yy))
+        if ((len(list(prolog.query("visitadas(%s,%s)" %(xx,yy)))))==0):
+            py_assert('database.pl',"visitadas(%s,%s)." %(xx,yy))
         descobre_parede_adjacente(xx, yy)
         return True
     return False
@@ -326,6 +332,7 @@ def munda_local_arqueiro(x, y, xx, yy, direcao):
  
 '''
 def arqueiro_anda_while():
+    rand_direcao = 1
     tentou_andar = 0 
     max_repeticao = 4
     cont_repeticao = 0
@@ -379,8 +386,13 @@ def arqueiro_anda_while():
                             print'andou norte depois de girar peão do baú\n'
                             return True
                     else:
-                        print'virou oeste', turn
-                        direcao = 'oeste' #arqueiro_anda(x,y,'oeste')
+                        rand_direcao = random.randint(1,2)
+                        if rand_direcao == 1:
+                            print'virou oeste', turn
+                            direcao = 'oeste' #arqueiro_anda(x,y,'oeste')
+                        else:
+                            print'virou leste', turn
+                            direcao = 'leste' #arqueiro_anda(x,y,'leste')
                 else:
                     if munda_local_arqueiro(x,y,x-1, y, direcao) == True:
                         tentou_andar=0
@@ -388,11 +400,17 @@ def arqueiro_anda_while():
                         print  turn ,'andou norte\n'
                         return True
             else:
-                
-                print'virou oeste', turn+1
-                turn = turn + 1
-                direcao = 'oeste' #arqueiro_anda(x,y,'oeste')
+                rand_direcao = random.randint(1,2)
                 tentou_andar=tentou_andar+1
+                if rand_direcao == 1:
+                    print'virou oeste', turn+1
+                    turn = turn + 1
+                    direcao = 'oeste' #arqueiro_anda(x,y,'oeste')
+                else:
+                    print'virou leste', turn+1
+                    turn = turn + 1
+                    direcao = 'leste' #arqueiro_anda(x,y,'oeste')
+                    
                 
         elif(direcao == 'sul'):
             if (len(list(prolog.query("seguro(%s,%s)" %(x+1,y))))>0):
@@ -405,8 +423,13 @@ def arqueiro_anda_while():
                             print'andou sul depois de girar peão do baú\n'
                             return True
                     else:
-                        print'virou leste', turn
-                        direcao = 'leste' #arqueiro_anda(x,y,'oeste')
+                        rand_direcao = random.randint(1,2)
+                        if rand_direcao == 1:
+                            print'virou leste', turn
+                            direcao = 'leste' #arqueiro_anda(x,y,'leste')
+                        else:
+                            print 'virou oeste', turn
+                            direcao = 'oeste'#arqueiro_anda(x,y,'oeste')
                         
                 else:
                         if munda_local_arqueiro(x,y,x+1, y, direcao) == True:
@@ -416,10 +439,17 @@ def arqueiro_anda_while():
                             return True
                         
             else:
-                print'virou leste', turn+1
-                turn = turn + 1
-                direcao = 'leste' #arqueiro_anda(x,y, 'leste')
-                tentou_andar=tentou_andar+1
+                rand_direcao = random.randint(1,2)
+                if rand_direcao == 1:
+                    print'virou leste', turn+1
+                    turn = turn + 1
+                    direcao = 'leste' #arqueiro_anda(x,y, 'leste')
+                    tentou_andar=tentou_andar+1
+                else:
+                    print'virou oeste', turn+1
+                    turn = turn + 1
+                    direcao = 'oeste' #arqueiro_anda(x,y, 'leste')
+                    tentou_andar=tentou_andar+1
                 
         elif(direcao == 'leste'):
             if (len(list(prolog.query("seguro(%s,%s)" %(x,y+1))))>0):
@@ -432,9 +462,14 @@ def arqueiro_anda_while():
                             turn =0
                             print'andou leste depois de girar peão do baú\n'
                             return True
-                    else: 
-                        print 'virou norte', turn
-                        direcao = 'norte'
+                    else:
+                        rand_direcao = random.randint(1,2)
+                        if rand_direcao == 1:
+                            print 'virou norte', turn
+                            direcao = 'norte'
+                        else:
+                            print 'virou sul', turn
+                            direcao = 'sul'
                 
                 else:
                     if munda_local_arqueiro(x,y,x, y+1, direcao) == True:
@@ -444,11 +479,17 @@ def arqueiro_anda_while():
                         return True
                 
             else:
-                print'virou norte', turn+1
-                turn = turn + 1
-                direcao = 'norte'  #arqueiro_anda(x,y,'norte')
-                tentou_andar=tentou_andar+1
-                
+                rand_direcao = random.randint(1,2)
+                if rand_direcao == 1:
+                    print'virou norte', turn+1
+                    turn = turn + 1
+                    direcao = 'norte'  #arqueiro_anda(x,y,'norte')
+                    tentou_andar=tentou_andar+1
+                else:
+                    print'virou sul', turn+1
+                    turn = turn + 1
+                    direcao = 'sul'  #arqueiro_anda(x,y,'norte')
+                    tentou_andar=tentou_andar+1
                 
         elif (direcao == 'oeste'):
             if (len(list(prolog.query("seguro(%s,%s)" %(x,y-1))))>0):
@@ -463,8 +504,13 @@ def arqueiro_anda_while():
                             print '\n'
                             return True
                     else:
-                        print 'virou sul'
-                        direcao = 'sul'
+                        rand_direcao = random.randint(1,2)
+                        if rand_direcao == 1:
+                            print 'virou sul'
+                            direcao = 'sul'
+                        else:
+                            print 'virou norte'
+                            direcao = 'norte'
                 else:
                     if munda_local_arqueiro(x,y,x, y-1, direcao) == True:
                         tentou_andar=0
@@ -473,10 +519,17 @@ def arqueiro_anda_while():
                         print '\n'
                         return True
             else:
-                print'virou sul', turn+1
-                turn = turn + 1
-                direcao = 'sul'     #arqueiro_anda(x,y,'sul')
-                tentou_andar=tentou_andar + 1
+                rand_direcao = random.randint(1,2)
+                if rand_direcao == 1:
+                    print'virou sul', turn+1
+                    turn = turn + 1
+                    direcao = 'sul'     #arqueiro_anda(x,y,'sul')
+                    tentou_andar=tentou_andar + 1
+                else:
+                    print'virou norte', turn+1
+                    turn = turn + 1
+                    direcao = 'norte'     #arqueiro_anda(x,y,'sul')
+                    tentou_andar=tentou_andar + 1
         print 'SEI LA MANO TA MT LOCO\n'
         cont_repeticao = cont_repeticao + 1
         
@@ -500,7 +553,7 @@ def descobre_parede_adjacente(x,y):
 AQUI EM BAIXO FICAM OS TESTES DO CÓDIGO 
 ***************************************
 '''
-'''
+
 py_assert('database.pl',"seguro(1,2).")
 py_assert('database.pl',"seguro(2,1).")
 py_assert('database.pl',"local_arqueiro(3,5,sul).")
@@ -522,83 +575,3 @@ prolog.consult('database.pl')
 print arqueiro_anda_while()
 prolog.consult('database.pl')
 print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()'''
