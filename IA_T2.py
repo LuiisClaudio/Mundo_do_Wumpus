@@ -282,7 +282,7 @@ def detecta_parede(x,y):
     prolog.consult('database.pl')
     eh_parede = list(prolog.query("parede(%s,%s)" %(x,y)))
     if (len(eh_parede)==0):
-            print 'n era parede'
+            #print 'n era parede'
             return False   
     return True
             
@@ -294,7 +294,7 @@ def faz_percepcao():
     if len(percebeu) == 0:
         #print 'percebeu nada' ,x ,y
         return False, False, False, False
-    print 'PERCEBEU ALGUMA COISA NESSA PORRA'
+    #print 'PERCEBEU ALGUMA COISA NESSA PORRA'
     sentiu_brisa = ret_sentiu_brisa_poco(x,y)
     #print 'Brisa ', sentiu_brisa 
     sentiu_fedor = ret_sentiu_fedor(x,y)
@@ -388,19 +388,23 @@ def arqueiro_anda():
     #print list(prolog.query("seguro(1,2)")) , "(1,2) seguro acho"
     percepcao, sentiu_brisa, sentiu_fedor, sentiu_brilho = faz_percepcao()
     if percepcao == False:
-        print 'Faz os devidos asserts'
+        #print 'Faz os devidos asserts'
         #ADJACENTES SÃO SEGUROS PARA ANDAR DESDE QUE NÃO SEJAM PAREDE
         if (not detecta_parede(x+1,y)):
-            py_assert('database.pl',"seguro(%s,%s)."%(x+1,y))
+            if (len(list(prolog.query("seguro(%s,%s)"%(x+1,y))))<1):
+                py_assert('database.pl',"seguro(%s,%s)."%(x+1,y))
 
         if (not detecta_parede(x-1,y)):
-            py_assert('database.pl',"seguro(%s,%s)."%(x-1,y))
+            if (len(list(prolog.query("seguro(%s,%s)"%(x-1,y))))<1):
+                py_assert('database.pl',"seguro(%s,%s)."%(x-1,y))
 
         if (not detecta_parede(x,y+1)):
-            py_assert('database.pl',"seguro(%s,%s)."%(x,y+1))
+            if (len(list(prolog.query("seguro(%s,%s)"%(x,y+1))))<1):
+                py_assert('database.pl',"seguro(%s,%s)."%(x,y+1))
 
         if (not detecta_parede(x,y-1)):
-            py_assert('database.pl',"seguro(%s,%s)."%(x,y-1))
+            if (len(list(prolog.query("seguro(%s,%s)"%(x,y-1))))<1):
+                py_assert('database.pl',"seguro(%s,%s)."%(x,y-1))
             
     turn = 0
     while(True):
@@ -617,7 +621,7 @@ def main():
         print_tabuleiro(preenche_tabuleiro())
         print '\n\n'
         cont = cont + 1
-main()
+#main()
 #atira()
 #pega_ouro()
 #inimigo_dano(10, 2)
@@ -626,8 +630,8 @@ atualiza_ponto(10)
 
 py_assert('database.pl',"local_arqueiro(1,1,norte).")
 py_assert('database.pl', "visitadas(1,1).")
-'''for i in range(40):
+for i in range(40):
     prolog.consult('database.pl')
     print arqueiro_anda()
     print i
-    print'''
+    print
