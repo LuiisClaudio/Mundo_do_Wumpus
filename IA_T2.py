@@ -121,7 +121,7 @@ tentou_andar=0
 prolog.consult('Mundo_do_Wumpus.pl')
 prolog.consult('database.pl')
 
-<<<<<<< HEAD
+
 def direcao_certa(x, y, xx, yy, direcao):
     if direcao == 'norte':
         if xx < x:
@@ -165,8 +165,7 @@ def atira():
                 faz_dano(i.get('X'), i.get('Y'), random.randint(20,50))
     return False
        
-=======
->>>>>>> a9b6aeeba8eee5c5ee4a774039d05854616d09e0
+
 def acha_coordenada_arqueiro():
     prolog.consult('database.pl')
     local_atual = list(prolog.query("local_arqueiro(X,Y, D)"))
