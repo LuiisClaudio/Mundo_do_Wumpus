@@ -121,17 +121,33 @@ tentou_andar=0
 prolog.consult('Mundo_do_Wumpus.pl')
 prolog.consult('database.pl')
 
+def caiu_poco():
+    prolog.consult('database.pl') 
+    x, y, direcao = acha_coordenada_arqueiro()
+    print x, y
+    poco = list(prolog.query('poco(%s,%s)'%(x,y)))
+    if len(poco) == 0:
+        return False
+    atualiza_ponto(-1000)
+    return True
+
 def atualiza_ponto(ponto):
     prolog.consult('database.pl')
     pontuacao = list(prolog.query('pontuacao(P)'))
     py_retract('database.pl', 'pontuacao(%s).' %(pontuacao[0].get('P')))
     pontos = pontuacao[0].get('P') + ponto
-    py_assert('database.pl', 'pontuacao(%s)' %(pontos))
+    py_assert('database.pl', 'pontuacao(%s).' %(pontos))
+    
 def pega_ouro():
     prolog.consult('database.pl') 
     x, y, direcao = acha_coordenada_arqueiro()
+    ouro = list(prolog.query('ouro(%s,%s)'%(x,y)))
+    print len(ouro)
+    if len(ouro) == 0:
+        return False
     py_retract('database.pl', 'ouro(%s,%s).' %(x, y))
     atualiza_ponto(1000)
+    return True
 
 def direcao_certa(x, y, xx, yy, direcao):
     if direcao == 'norte':
@@ -150,7 +166,11 @@ def direcao_certa(x, y, xx, yy, direcao):
         if yy > y:
             return True
         return False
-
+def inimigo_dano(x, y):
+    prolog.consult('database.pl')
+    inimigo = list(prolog.query('inimigo(D,V,%s,%s)'%(x,y)))
+    atualiza_ponto((-1)*inimigo[0].get('D'))
+    
 def faz_dano(x, y, dano):
     prolog.consult('database.pl')
     inimigo = list(prolog.query('inimigo(D,V,%s,%s)'%(x,y)))
@@ -163,7 +183,8 @@ def faz_dano(x, y, dano):
     return False
 
 def atira():
-    prolog.consult('database.pl') 
+    atualiza_ponto(-10)
+    prolog.consult('database.pl')
     x, y, direcao = acha_coordenada_arqueiro()
     inimigo = list(prolog.query("inimigo(D, V, X,Y)"))
     for i in inimigo:
@@ -564,7 +585,9 @@ AQUI EM BAIXO FICAM OS TESTES DO CÓDIGO
 ***************************************
 '''
 #atira()
-pega_ouro()
+#pega_ouro()
+#inimigo_dano(10, 2)
+print caiu_poco()
 '''
 py_assert('database.pl',"seguro(1,2).")
 py_assert('database.pl',"seguro(2,1).")
