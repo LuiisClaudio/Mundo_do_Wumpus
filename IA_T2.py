@@ -579,7 +579,7 @@ def arqueiro_anda():
         cont_repeticao = cont_repeticao + 1
         
 
-
+			
 #função usada pela arqueiro_anda
 #ela descobre paredes adjacentes ao arqueiro e coloca no db
 def descobre_parede_adjacente(x,y):
@@ -598,6 +598,19 @@ def descobre_parede_adjacente(x,y):
 AQUI EM BAIXO FICAM OS TESTES DO CÓDIGO 
 ***************************************
 '''
+def main():
+    cont = 0
+    while(True):
+        if cont < 10:
+            return
+        prolog.consult('database.pl')
+        pontuacao = list(prolog.query('pontuacao(P)'))
+        energia = list(prolog.query('energia(E)'))
+        if(pontuacao[0].get('P') < 0):
+            return False
+        if(energia[0].get('E') < 0):
+            return False
+        cont = cont + 1
 
 #atira()
 #pega_ouro()
