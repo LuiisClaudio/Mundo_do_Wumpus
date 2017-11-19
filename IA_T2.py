@@ -374,7 +374,7 @@ def munda_local_arqueiro(x, y, xx, yy, direcao):
   ********************
  
 '''
-def arqueiro_anda_while():
+def arqueiro_anda():
     rand_direcao = 1
     tentou_andar = 0 
     max_repeticao = 4
@@ -609,6 +609,6 @@ py_assert('database.pl',"local_arqueiro(1,1,norte).")
 py_assert('database.pl', "visitadas(1,1).")
 for i in range(40):
     prolog.consult('database.pl')
-    print arqueiro_anda_while()
+    print arqueiro_anda()
     print i
     print
