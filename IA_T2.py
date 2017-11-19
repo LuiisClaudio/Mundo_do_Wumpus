@@ -140,9 +140,13 @@ def direcao_certa(x, y, xx, yy, direcao):
 def faz_dano(x, y, dano):
     prolog.consult('database.pl')
     inimigo = list(prolog.query('inimigo(D,V,%s,%s)'%(x,y)))
-    vida_inimigo = 0
-    print inimigo, dano
-    return
+    vida_inimigo = inimigo[0].get('V') - dano
+    print vida_inimigo
+    py_retract('database.pl','inimigo(%s,%s,%s,%s).'%(inimigo[0].get('D'),inimigo[0].get('V'),x,y) )
+    if vida_inimigo <= 0:
+        return True
+    py_assert('database.pl', 'inimigo(%s,%s,%s,%s).'%(inimigo[0].get('D'),vida_inimigo,x,y) )
+    return False
 
 def atira():
     prolog.consult('database.pl') 
