@@ -119,6 +119,45 @@ tentou_andar=0
 prolog.consult('Mundo_do_Wumpus.pl')
 prolog.consult('database.pl')
 
+def direcao_certa(x, y, xx, yy, direcao):
+    if direcao == 'norte':
+        if xx < x:
+            return True
+        return False
+    elif direcao == 'sul':
+        if xx > x:
+            return True
+        return False
+    elif direcao == 'oeste':
+        if yy < y:
+            return True
+        return False
+    elif direcao == 'leste':
+        if yy > y:
+            return True
+        return False
+
+def faz_dano(x, y, dano):
+    prolog.consult('database.pl')
+    inimigo = list(prolog.query('inimigo(D,V,%s,%s)'%(x,y)))
+    vida_inimigo = 0
+    print inimigo, dano
+    return
+
+def atira():
+    prolog.consult('database.pl') 
+    x, y, direcao = acha_coordenada_arqueiro()
+    inimigo = list(prolog.query("inimigo(D, V, X,Y)"))
+    for i in inimigo:
+        if x == i.get('X') and y == i.get('Y'):
+            print 'Mesma coordenada na funcao de atirar'
+            return
+        elif x == i.get('X') or x == i.get('Y'):     
+            if direcao_certa(x, y, i.get('X'), i.get('Y'), direcao) == True:
+                print 'Entrou'
+                faz_dano(i.get('X'), i.get('Y'), random.randint(20,50))
+    return False
+       
 def acha_coordenada_arqueiro():
     prolog.consult('database.pl')
     local_atual = list(prolog.query("local_arqueiro(X,Y, D)"))
@@ -128,8 +167,7 @@ def acha_coordenada_arqueiro():
     y = local_atual[0].get("Y")
     direcao = local_atual[0].get("D")
     return x,y,direcao
-#print acha_coordenada_arqueiro()
-    
+atira()
 def ret_sentiu_brisa_poco(x, y):
     prolog.consult('database.pl')
     sente_brisa = list(prolog.query("sentiu_brisa_poco(%s,%s)"%(x, y)))
@@ -458,7 +496,7 @@ def descobre_parede_adjacente(x,y):
 AQUI EM BAIXO FICAM OS TESTES DO CÓDIGO 
 ***************************************
 '''
-
+'''
 py_assert('database.pl',"seguro(1,2).")
 py_assert('database.pl',"seguro(2,1).")
 py_assert('database.pl',"local_arqueiro(3,5,sul).")
@@ -559,4 +597,4 @@ print arqueiro_anda_while()
 prolog.consult('database.pl')
 print arqueiro_anda_while()
 prolog.consult('database.pl')
-print arqueiro_anda_while()
+print arqueiro_anda_while()'''
