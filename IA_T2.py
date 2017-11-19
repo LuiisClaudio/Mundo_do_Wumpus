@@ -608,30 +608,37 @@ AQUI EM BAIXO FICAM OS TESTES DO CÓDIGO
 def main():
     cont = 0
     while(True):
-        sleep(1)
-        if cont > 10:
+        sleep(0)
+        if cont > 100:
             return
         prolog.consult('database.pl')
         pontuacao = list(prolog.query('pontuacao(P)'))
         energia = list(prolog.query('energia(E)'))
-        if(pontuacao[0].get('P') < 0):
-            return False
+        if len(energia) == 0:
+            print 'lista energia vazia'
+            break
+        #elif len(pontuacao) == 0:
+            #print 'lista pontuacao vazia'
+            #break
+        #if(pontuacao[0].get('P') < 0):
+            #return False
         if(energia[0].get('E') < 0):
             return False
         print_tabuleiro(preenche_tabuleiro())
-        print '\n\n'
+        #Vou chamar andar
+        arqueiro_anda()
         cont = cont + 1
-#main()
+main()
 #atira()
 #pega_ouro()
 #inimigo_dano(10, 2)
 #print caiu_poco()
-atualiza_ponto(10)
+#atualiza_ponto(10)
 
-py_assert('database.pl',"local_arqueiro(1,1,norte).")
-py_assert('database.pl', "visitadas(1,1).")
-for i in range(40):
+#py_assert('database.pl',"local_arqueiro(1,1,norte).")
+#py_assert('database.pl', "visitadas(1,1).")
+'''for i in range(40):
     prolog.consult('database.pl')
     print arqueiro_anda()
     print i
-    print
+    print'''

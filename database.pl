@@ -173,6 +173,8 @@ parede(12,13).*/
 parede(0,1).
 parede(1,0).
 parede(0,0).
+energia(100).
+local_arqueiro(1,1,sul).
 
 
 /*
