@@ -119,6 +119,49 @@ tentou_andar=0
 prolog.consult('Mundo_do_Wumpus.pl')
 prolog.consult('database.pl')
 
+def preenche_tabuleiro():
+    prolog.consult('database.pl')
+    tab_tam = 14
+    tab = []*tab_tam
+    
+    arqueiro = list(prolog.query("local_arqueiro(X, Y, D)"))
+    poco = list(prolog.query("poco(X, Y)"))
+    inimigo = list(prolog.query("inimigo(Z, W, X, Y)"))
+    ouro = list(prolog.query("ouro(X, Y)"))
+    parede = list(prolog.query("parede(X, Y)"))
+    visitadas = list(prolog.query("visitadas(X, Y)"))
+    
+    #print 'arqueiro', arqueiro
+    #print 'poco', poco
+    #print 'inimigo', inimigo
+    #print 'ouro', ouro
+    #print 'parede', parede
+    #print 'visitadas', visitadas
+    
+    
+    for i in range(tab_tam):
+    	tab.append(['?']*tab_tam)
+    for i in parede:
+        tab[i.get('X')][i.get('Y')] = 'X'
+    for i in visitadas:
+        x = int(i.get('X'))
+        y = int(i.get('Y'))
+        for j in poco:
+            if i.get('X') == j.get('X') and  i.get('Y') == j.get('Y'):
+                tab[x][y] = 'P'
+                #print tab[x][y]
+        for j in inimigo:
+            if i.get('X') == j.get('X') and  i.get('Y') == j.get('Y'):
+                tab[x][y] = 'I'
+                #print tab[x][y]
+        for j in ouro:
+            if i.get('X') == j.get('X') and  i.get('Y') == j.get('Y'):
+                tab[x][y] = 'O'
+                #print tab[x][y]
+                
+    tab[arqueiro[0].get('X')][arqueiro[0].get('Y')] = 'A'
+
+    return tab
 def acha_coordenada_arqueiro():
     prolog.consult('database.pl')
     local_atual = list(prolog.query("local_arqueiro(X,Y, D)"))
@@ -193,14 +236,13 @@ def detecta_parede(x,y):
     return True
             
 def faz_percepcao():
-    'entrou na percepcao'
     prolog.consult('database.pl')
     x, y, d = acha_coordenada_arqueiro()
     percebeu = list(prolog.query("sentiu_alguma_coisa(%s, %s)" %(x,y)))
     if len(percebeu) == 0:
         print 'percebeu nada' ,x ,y
         return False, False, False, False
-    print 'PERCEBEU ALGUMA COISA NESSA PORRA'
+    
     sentiu_brisa = ret_sentiu_brisa_poco(x,y)
     print 'Brisa ', sentiu_brisa 
     sentiu_fedor = ret_sentiu_fedor(x,y)
@@ -267,8 +309,8 @@ def munda_local_arqueiro(x, y, xx, yy, direcao):
         py_retract('database.pl',"local_arqueiro")
         py_assert('database.pl',"local_arqueiro(%s,%s,%s)." %(xx,yy, direcao))
         prolog.consult('database.pl')
-        #if ((len(list(prolog.query("visitadas(%s,%s)" %(xx,yy)))))==0):
-        py_assert('database.pl',"visitadas(%s,%s)." %(xx,yy))
+        if ((len(list(prolog.query("visitadas(%s,%s)" %(xx,yy)))))==0):
+            py_assert('database.pl',"visitadas(%s,%s)." %(xx,yy))
         descobre_parede_adjacente(xx, yy)
         return True
     return False
@@ -291,9 +333,11 @@ def arqueiro_anda_while():
     print list(prolog.query("seguro(2,1)")), "(2,1) seguro acho"
     print list(prolog.query("seguro(1,2)")) , "(1,2) seguro acho"
     percepcao, sentiu_brisa, sentiu_fedor, sentiu_brilho = faz_percepcao()
-    if percepcao == False:
+    if percepcao == True:
         print 'Faz os devidos asserts'
         #ADJACENTES SÃO SEGUROS PARA ANDAR
+    
+    
         if (not detecta_parede(x+1,y)):
             py_assert('database.pl',"seguro(%s,%s)."%(x+1,y))
  
@@ -381,35 +425,8 @@ AQUI EM BAIXO FICAM OS TESTES DO CÓDIGO
 ***************************************
 '''
 
-py_assert('database.pl',"seguro(1,2).") 
-py_assert('database.pl',"seguro(1,3).")
-py_assert('database.pl',"seguro(1,4).")
-py_assert('database.pl',"seguro(2,4).")
+py_assert('database.pl',"seguro(1,2).")
 py_assert('database.pl',"local_arqueiro(1,1,oeste).")
 prolog.consult('database.pl')
 arqueiro_anda_while()
-prolog.consult('database.pl')
-arqueiro_anda_while()
-prolog.consult('database.pl')
-arqueiro_anda_while()
-prolog.consult('database.pl')
-arqueiro_anda_while()
-prolog.consult('database.pl')
-arqueiro_anda_while()
-prolog.consult('database.pl')
-arqueiro_anda_while()
-prolog.consult('database.pl')
-arqueiro_anda_while()
-prolog.consult('database.pl')
-arqueiro_anda_while()
-prolog.consult('database.pl')
-arqueiro_anda_while()
-prolog.consult('database.pl')
-arqueiro_anda_while()
-prolog.consult('database.pl')
-arqueiro_anda_while()
-prolog.consult('database.pl')
-arqueiro_anda_while()
-prolog.consult('database.pl')
-arqueiro_anda_while()
-prolog.consult('database.pl')
+preenche_tabuleiro()
