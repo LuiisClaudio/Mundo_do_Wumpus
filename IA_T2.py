@@ -209,7 +209,6 @@ def atira():
                 print 'Entrou'
                 faz_dano(i.get('X'), i.get('Y'), random.randint(20,50))
     return False
-       
 
 def acha_coordenada_arqueiro():
     prolog.consult('database.pl')
@@ -232,16 +231,16 @@ def ret_sentiu_brisa_poco(x, y):
 def assert_pode_ter_inimigo(x, y):
     prolog.consult('database.pl')
     if prolog.query("seguro(%s, %s)"%(x+1,y)) != {}:
-        print 'Entrei'
+        #print 'Entrei'
         py_assert('database.pl',"pode_ter_inimigo(%s,%s)." %(x+1,y))
     if prolog.query("seguro(%s, %s)"%(x-1, y)) != {}:
-        print 'Entrei'
+        #print 'Entrei'
         py_assert('database.pl',"pode_ter_inimigo(%s,%s)." %(x-1, y))
     if prolog.query("seguro(%s, %s)"%(x,y+1)) != {}:
-        print 'Entrei'
+        #print 'Entrei'
         py_assert('database.pl',"pode_ter_inimigo(%s,%s)." %(x,y+1))
     if prolog.query("seguro(%s, %s)"%(x,y-1)) != {}:
-        print 'Entrei'
+        #print 'Entrei'
         py_assert('database.pl',"pode_ter_inimigo(%s,%s)." %(x,y-1))
 #assert_pode_ter_inimigo(1,1)
 
@@ -249,16 +248,16 @@ def assert_pode_ter_inimigo(x, y):
 def assert_pode_ter_poco(x, y):
     prolog.consult('database.pl')
     if prolog.query("seguro(%s, %s)"%(x+1,y)) != {}:
-        print 'Entrei'
+        #print 'Entrei'
         py_assert('database.pl',"pode_ter_poco(%s,%s)." %(x+1,y))
     if prolog.query("seguro(%s, %s)"%(x-1, y)) != {}:
-        print 'Entrei'
+        #print 'Entrei'
         py_assert('database.pl',"pode_ter_poco(%s,%s)." %(x-1, y))
     if prolog.query("seguro(%s, %s)"%(x,y+1)) != {}:
-        print 'Entrei'
+        #print 'Entrei'
         py_assert('database.pl',"pode_ter_poco(%s,%s)." %(x,y+1))
     if prolog.query("seguro(%s, %s)"%(x,y-1)) != {}:
-        print 'Entrei'
+        #print 'Entrei'
         py_assert('database.pl',"pode_ter_poco(%s,%s)." %(x,y-1))
 #assert_pode_ter_poco(1,1)
         
@@ -290,15 +289,15 @@ def faz_percepcao():
     x, y, d = acha_coordenada_arqueiro()
     percebeu = list(prolog.query("sentiu_alguma_coisa(%s, %s)" %(x,y)))
     if len(percebeu) == 0:
-        print 'percebeu nada' ,x ,y
+        #print 'percebeu nada' ,x ,y
         return False, False, False, False
     print 'PERCEBEU ALGUMA COISA NESSA PORRA'
     sentiu_brisa = ret_sentiu_brisa_poco(x,y)
-    print 'Brisa ', sentiu_brisa 
+    #print 'Brisa ', sentiu_brisa 
     sentiu_fedor = ret_sentiu_fedor(x,y)
-    print 'Fedor', sentiu_fedor
+    #print 'Fedor', sentiu_fedor
     sentiu_brilho = ret_sentiu_brilho(x, y)
-    print 'Brilho', sentiu_brilho
+    #print 'Brilho', sentiu_brilho
     return True, sentiu_brisa, sentiu_fedor, sentiu_brilho
 
 def cosulta_database(x, y):
@@ -409,11 +408,13 @@ def arqueiro_anda_while():
         #elif tentou_andar > 3:
             #return 'Sai tentando andar'
         prolog.consult('database.pl')
-        
+        #print list(prolog.query("adjacente(1,2, X,Y)"))
+        #print list(prolog.query("seguro(X,Y)")), 'lista segura'
+        #print list(prolog.query("explorar(1,Y)")), 'explora'
         if (direcao == 'norte'): #checka a direção 
             if (len(list(prolog.query("seguro(%s,%s)" %(x-1,y))))>0):  #ve se é seguro andar para a direção
                 if (len(list(prolog.query("visitadas(%s,%s)" %(x-1,y))))>0): #checka se já visitou o local em que  tenta andar
-                    turn = turn + 1                                          #CASO SIM ELE GIRA
+                    turn = turn + 1                                            #CASO SIM ELE GIRA
                     print 'ja passei aqui norte' , turn
                     
                     '''
@@ -453,7 +454,7 @@ def arqueiro_anda_while():
                 else:
                     print'virou leste', turn+1
                     turn = turn + 1
-                    direcao = 'leste' #arqueiro_anda(x,y,'oeste')
+                    direcao = 'leste' #arqueiro_anda(x,y,'leste')
                     
                 
         elif(direcao == 'sul'):
@@ -574,7 +575,7 @@ def arqueiro_anda_while():
                     turn = turn + 1
                     direcao = 'norte'     #arqueiro_anda(x,y,'sul')
                     tentou_andar=tentou_andar + 1
-        print 'SEI LA MANO TA MT LOCO\n'
+        #print 'SEI LA MANO TA MT LOCO\n'
         cont_repeticao = cont_repeticao + 1
         
 
@@ -597,30 +598,17 @@ def descobre_parede_adjacente(x,y):
 AQUI EM BAIXO FICAM OS TESTES DO CÓDIGO 
 ***************************************
 '''
+
 #atira()
 #pega_ouro()
 #inimigo_dano(10, 2)
 #print caiu_poco()
 atualiza_ponto(10)
-'''
-py_assert('database.pl',"seguro(1,2).")
-py_assert('database.pl',"seguro(2,1).")
-py_assert('database.pl',"local_arqueiro(3,5,sul).")
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()
-prolog.consult('database.pl')
-print arqueiro_anda_while()'''
+
+py_assert('database.pl',"local_arqueiro(1,1,norte).")
+py_assert('database.pl', "visitadas(1,1).")
+for i in range(40):
+    prolog.consult('database.pl')
+    print arqueiro_anda_while()
+    print i
+    print
