@@ -131,9 +131,22 @@ def caiu_poco():
     atualiza_ponto(-1000)
     return True
 
+def atualiza_energia(energia):
+    prolog.consult('database.pl')
+    energias = list(prolog.query('energia(E)'))
+    if len(energias) == 0:
+        py_assert('database.pl', 'energia(%s).' %(energia))
+        return False
+    py_retract('database.pl', 'energia(%s).' %(energias[0].get('E')))
+    energia_nova = energias[0].get('E') + energia
+    py_assert('database.pl', 'energia(%s).' %(energia_nova))
+    
 def atualiza_ponto(ponto):
     prolog.consult('database.pl')
     pontuacao = list(prolog.query('pontuacao(P)'))
+    if len(pontuacao) == 0:
+        py_assert('database.pl', 'pontuacao(%s).' %(ponto))
+        return False
     py_retract('database.pl', 'pontuacao(%s).' %(pontuacao[0].get('P')))
     pontos = pontuacao[0].get('P') + ponto
     py_assert('database.pl', 'pontuacao(%s).' %(pontos))
@@ -587,7 +600,8 @@ AQUI EM BAIXO FICAM OS TESTES DO CÓDIGO
 #atira()
 #pega_ouro()
 #inimigo_dano(10, 2)
-print caiu_poco()
+#print caiu_poco()
+atualiza_ponto(10)
 '''
 py_assert('database.pl',"seguro(1,2).")
 py_assert('database.pl',"seguro(2,1).")

@@ -6,7 +6,7 @@
 :- dynamic pegar/2.
 :- dynamic poco/2.
 :- dynamic energia/1.
-:- dynamic score/1.
+:- dynamic pontuacao/1.
 :- dynamic municao/1.
 :- dynamic local_arqueiro/3.
 :- dynamic visitadas/2.
@@ -35,7 +35,7 @@ adjacente(X, Y, X, YY) :- YY is Y-1, pode_ser_acessada(X, YY).
 pode_ser_acessada(X, Y) :- inicio(X, Y); vazia(X, Y); tem_inimigo(X, Y); ouro(X, Y); poco(X, Y);!. 
 
 
-estado_atual_arqueiro(X, Y, Direcao, Energia, Score, Municao) :- local_arqueiro(X, Y, Direcao), energia(Energia), score(Score), municao(Municao), !.
+estado_atual_arqueiro(X, Y, Direcao, Energia, Pontuacao, Municao) :- local_arqueiro(X, Y, Direcao), energia(Energia), pontuacao(Pontuacao), municao(Municao), !.
 
 
 
@@ -160,25 +160,12 @@ remover_incertezas_inimigos_adjacentes() :-
 
 %Atualiza pontuação
 
-arqueiro_somar_score(SOM) :- score(C), CC is C+SOM, retract(score(C)), assert(score(CC)).
-arqueiro_subtrair_score(SUB) :- SOM is SUB * -1, arqueiro_somar_score(SOM).
+arqueiro_somar_pontuacao(SOM) :- pontuacao(C), CC is C+SOM, retract(pontuacao(C)), assert(pontuacao(CC)).
+arqueiro_subtrair_pontuacao(SUB) :- SOM is SUB * -1, arqueiro_somar_pontuacao(SOM).
 
 arqueiro_somar_energia(SOM) :- energia(E), EE is E+SOM, retract(energia(E)), assert(energia(EE)).
 arqueiro_subtrair_energia(SUB) :- SOM is SUB * -1, arqueiro_somar_energia(SOM).
 
 
-arqueiro_perdeu_municao() :- municao(Municao), NewAmmo is Municao - 1, retract(municao(Municao)), assert(municao(NewAmmo)), !.
-
-
-
-
-%Parte que Kevin fez! Me explica depois please...
-%nao(X):-\+X.
-
-%adjacente(ponto(X,Y),ponto(XX,YY)):-(XX is X,YY is Y-1);(XX is X,YY is Y+1);(YY is Y,XX is X+1);(YY is Y,XX is X-1),!.
-
-%pode_ter_poco(X,Y):-
-%sentiu_brisa_poco(X1,Y1);adjacente(ponto(X1,Y1),ponto(X,Y)),!.
-
-%naosafe(X,Y):-(nao(safo(X,Y)),nao(parede(X,Y)),pode_ter_inimigo(X,Y),pode_ter_poco(X,Y)).
+arqueiro_perdeu_municao() :- municao(Municao), NewAmmo is Municao - 1, retract(municao(Municao)), assert(municao(NewAmmo)), !
 
