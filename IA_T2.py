@@ -121,6 +121,17 @@ tentou_andar=0
 prolog.consult('Mundo_do_Wumpus.pl')
 prolog.consult('database.pl')
 
+def atualiza_ponto(ponto):
+    prolog.consult('database.pl')
+    pontuacao = list(prolog.query('pontuacao(P)'))
+    py_retract('database.pl', 'pontuacao(%s).' %(pontuacao[0].get('P')))
+    pontos = pontuacao[0].get('P') + ponto
+    py_assert('database.pl', 'pontuacao(%s)' %(pontos))
+def pega_ouro():
+    prolog.consult('database.pl') 
+    x, y, direcao = acha_coordenada_arqueiro()
+    py_retract('database.pl', 'ouro(%s,%s).' %(x, y))
+    atualiza_ponto(1000)
 
 def direcao_certa(x, y, xx, yy, direcao):
     if direcao == 'norte':
@@ -552,7 +563,9 @@ def descobre_parede_adjacente(x,y):
 AQUI EM BAIXO FICAM OS TESTES DO CÓDIGO 
 ***************************************
 '''
-
+#atira()
+pega_ouro()
+'''
 py_assert('database.pl',"seguro(1,2).")
 py_assert('database.pl',"seguro(2,1).")
 py_assert('database.pl',"local_arqueiro(3,5,sul).")
@@ -573,4 +586,4 @@ print arqueiro_anda_while()
 prolog.consult('database.pl')
 print arqueiro_anda_while()
 prolog.consult('database.pl')
-print arqueiro_anda_while()
+print arqueiro_anda_while()'''
