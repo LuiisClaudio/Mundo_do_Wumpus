@@ -53,6 +53,8 @@ def preenche_tabuleiro():
     for i in parede:
         tab[i.get('X')][i.get('Y')] = 'X'
     for i in visitadas:
+        tab[i.get('X')][i.get('Y')] = '*' 
+    for i in visitadas:
         x = int(i.get('X'))
         y = int(i.get('Y'))
         for j in poco:
