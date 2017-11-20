@@ -12,9 +12,15 @@ def database_default(pl_file):
             'parede(1,0).\n',
             'parede(0,0).\n',
             'energia(100).\n',
+            'local_arqueiro(1,1,oeste).\n'
             'visitadas(1,1).\n',
             'pontuacao(0).\n',
             'municao(5).\n'
+			
+	    ##Não deve entrar no default
+	    
+	    ,'inimigo(20, 100, 2, 1).\n',
+            'poco(2,1).\n'
             ]
         f.seek(0)
         for line in fatos_default:
@@ -201,24 +207,6 @@ def pega_ouro():
         atualiza_ponto(1000)
         return True
     return False
-
-def direcao_certa(x, y, xx, yy, direcao):
-    if direcao == 'norte':
-        if xx < x:
-            return True
-        return False
-    elif direcao == 'sul':
-        if xx > x:
-            return True
-        return False
-    elif direcao == 'oeste':
-        if yy < y:
-            return True
-        return False
-    elif direcao == 'leste':
-        if yy > y:
-            return True
-        return False
     
 def inimigo_dano():
     prolog.consult('database.pl')
@@ -226,7 +214,7 @@ def inimigo_dano():
     inimigo = list(prolog.query('inimigo(D,V,%s,%s)'%(x,y)))
     if len(inimigo) == 0:
         return False
-    tem_inimigo = list(prolog.query('tem_inimigo(%s,%s)'%(x,y)))
+    tem_inimigo = list(prolog.query('inimigo(_,_,%s,%s)'%(x,y)))
     if len(tem_inimigo) > 0:
         atualiza_ponto((-1)*inimigo[0].get('D'))
         atualiza_energia((-1)*inimigo[0].get('D'))
@@ -240,24 +228,42 @@ def faz_dano(x, y, dano):
     print vida_inimigo
     py_retract('database.pl','inimigo(%s,%s,%s,%s).'%(inimigo[0].get('D'),inimigo[0].get('V'),x,y) )
     if vida_inimigo <= 0:
+        py_assert('database.pl', 'inimigo_grito(%s,%s)'%(x, y))
         return True
+    print 'inimigo(%s,%s,%s,%s).'%(inimigo[0].get('D'),vida_inimigo,x,y), 'tem_inimgo(%s,%s)' %(x, y)
     py_assert('database.pl', 'inimigo(%s,%s,%s,%s).'%(inimigo[0].get('D'),vida_inimigo,x,y) )
+    py_assert('database.pl', 'tem_inimgo(%s,%s)' %(x, y))
     return False
-
+def acerta_inimigo(x, y, d, xx, yy):
+    if   x > xx and y == y:
+        return True
+    elif x < xx and y == y:
+        return True
+    elif y < yy and x == x:
+        return True
+    elif y > yy and x == x:
+        return True
+    return False
 def atira():
+    print 'Vou atirar'
     atualiza_ponto(-10)
     atualiza_municao(-1)
-    prolog.consult('database.pl')
+    prolog.consult('database.pl')#prolog.consult('check.pl')
+    prolog.consult('Mundo_do_Wumpus.pl')
     x, y, direcao = acha_coordenada_arqueiro()
     inimigo = list(prolog.query("inimigo(D, V, X,Y)"))
+    print inimigo
     for i in inimigo:
-        if x == i.get('X') and y == i.get('Y'):
-            print 'Mesma coordenada na funcao de atirar'
-            return
-        elif x == i.get('X') or x == i.get('Y'):     
-            if direcao_certa(x, y, i.get('X'), i.get('Y'), direcao) == True:
-                print 'Entrou'
-                faz_dano(i.get('X'), i.get('Y'), random.randint(20,50))
+        deu_dano = list(prolog.query("deu_dano(%s,%s,%s,%s,%s)" %(x, y, direcao,i.get('X'), i.get('Y'))))
+        print deu_dano
+        print x, y, direcao,i.get('X'), i.get('Y')
+        print len(deu_dano)
+        print 'Posso acertar alguem'
+        if len(deu_dano) > 0 or acerta_inimigo(x, y, direcao,i.get('X'), i.get('Y')) ==True:
+            print 'Dei dano'
+            faz_dano(i.get('X'), i.get('Y'), random.randint(20,50))
+            return True
+    'Atirei em ninguem'
     return False
 
 def acha_coordenada_arqueiro():
@@ -269,8 +275,7 @@ def acha_coordenada_arqueiro():
     y = local_atual[0].get("Y")
     direcao = local_atual[0].get("D")
     return x,y,direcao
-#print acha_coordenada_arqueiro()
-    
+#print acha_coordenada_arqueiro()    
 def ret_sentiu_brisa_poco(x, y):
     prolog.consult('database.pl')
     sente_brisa = list(prolog.query("sentiu_brisa_poco(%s,%s)"%(x, y)))
@@ -332,7 +337,53 @@ def detecta_parede(x,y):
             #print 'n era parede'
             return False   
     return True
-            
+
+def adjacente(x,y,xx,yy):
+    if (y==yy):
+        if (x==xx+1 or x==xx-1):
+            return True
+        else:
+            return False
+    elif (x==xx):
+        if (y==yy+1 or y==yy-1):
+            return True
+        else:
+            return False
+    else:
+        return False
+    
+def sentiu_brisa(x, y):
+    prolog.consult('check.pl')
+    poco = list(prolog.query('poco(X,Y)'))
+    print poco
+    for i in poco:
+        if i.get('X') - 1 == x and i.get('Y') == y:
+            return True
+        elif i.get('X') + 1 == x and i.get('Y') == y:
+            return True
+        elif i.get('X') == x and i.get('Y') - 1 == y:
+            return True
+        elif i.get('X') == x and i.get('Y') + 1 == y:
+            return True
+    return False
+
+def sentiu_fedor(x, y):
+    prolog.consult('database.pl')
+    inimigo = list(prolog.query('inimigo(_,_,X,Y)'))
+    print inimigo
+    for i in inimigo:
+        if i.get('X') - 1 == x and i.get('Y') == y:
+            return True
+        elif i.get('X') + 1 == x and i.get('Y') == y:
+            return True
+        elif i.get('X') == x and i.get('Y') - 1 == y:
+            return True
+        elif i.get('X') == x and i.get('Y') + 1 == y:
+            return True
+    return False
+
+#print 'Sentiu brisa ', sentiu_brisa(1,1)
+print 'Sentiu fedor ', sentiu_fedor(1,1)
 def faz_percepcao():
     'entrou na percepcao'
     prolog.consult('database.pl')
@@ -424,7 +475,7 @@ def munda_local_arqueiro(x, y, xx, yy, direcao):
   ********************
  
 '''
-def arqueiro_anda():
+def arqueiro_anda(cont_ouro):
     rand_direcao = 1
     tentou_andar = 0 
     max_repeticao = 4
@@ -677,10 +728,19 @@ def descobre_parede_adjacente(x,y):
 AQUI EM BAIXO FICAM OS TESTES DO CÓDIGO 
 ***************************************
 '''
-
+def decide_se_atira(estado):
+    prolog.consult('check.pl')
+    x, y, direcao = acha_coordenada_arqueiro()
+    sentiu_fedor = list(prolog.query('sentiu_fedor(%s,%s)' %(x,y)))
+    if len(sentiu_fedor) > 0:
+        if estado > 10:
+            atira()
+        return True
+    return False
+decide_se_atira(20)
 def main():
-    py_assert('database.pl',"local_arqueiro(1,1,oeste).")
     cont = 0
+    cont_ouro = 0
     while(True):
         sleep(1)
         if cont > 100:
@@ -701,13 +761,14 @@ def main():
             atualiza_pontuacao(-1000)
             break
         print_tabuleiro(preenche_tabuleiro())
-        if arqueiro_anda() == True:
+        if arqueiro_anda(cont_ouro) == True:
             caiu_poco()
             inimigo_dano()
-            pega_ouro()
-            
+            if pega_ouro() == True:
+                cont_ouro = cont_ouro + 1
+                
         cont = cont + 1
-main()
+#main()
 #atira()
 #pega_ouro()
 #inimigo_dano(10, 2)
