@@ -24,6 +24,8 @@
 :- dynamic ouviu_passos_inimigo/2.
 :- dynamic seguro/2.
 
+
+
 %funcionou
 adjacente(X, Y, XX, Y) :- XX is X+1, pode_ser_acessada(XX, Y).
 adjacente(X, Y, XX, Y) :- XX is X-1, pode_ser_acessada(XX, Y).
@@ -33,6 +35,13 @@ adjacente(X, Y, X, YY) :- YY is Y-1, pode_ser_acessada(X, YY).
 %funcionou
 pode_ser_acessada(X, Y) :- inicio(X, Y); vazia(X, Y); tem_inimigo(X, Y); ouro(X, Y); poco(X, Y);!. 
 
+mesmo_local_inimigo(X,Y) :- inimigo(_, _, XX, YY), local_arqueiro(X, Y, _), !.
+
+
+deu_dano(X, Y, D, Z, W) :- X > Z, Y == W,  D == norte.
+deu_dano(X, Y, D, Z, W) :- X < Z, Y == W,  D == sul.
+deu_dano(X, Y, D, Z, W) :- Y < W, X == Z,  D == leste.
+deu_dano(X, Y, D, Z, W) :- Y < W, X == Z,  D == oeste.
 
 estado_atual_arqueiro(X, Y, Direcao, Energia, Pontuacao, Municao) :- local_arqueiro(X, Y, Direcao), energia(Energia), pontuacao(Pontuacao), municao(Municao), !.
 

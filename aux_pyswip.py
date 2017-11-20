@@ -39,9 +39,9 @@ def preenche_check(mapa_wumpus):
                     myfile.write('parede(%s,%s).\n' %(i, j))
                     
                 elif fato >= 45 and fato <= 155:
-                    myfile.write('inimigo(%s,%s,20,100).\n' %(i, j))
+                    myfile.write('inimigo(20,100,%s,%s).\n' %(i, j))
                 elif fato >= 445 and fato <= 555:
-                    myfile.write('inimigo(%s,%s,50,100).\n' %(i, j))
+                    myfile.write('inimigo(50,100,%s,%s).\n' %(i, j))
                 elif fato >= -300 and fato <= -245:
                     myfile.write('poco(%s,%s).\n' %(i, j))
                 elif fato >= 8000:
