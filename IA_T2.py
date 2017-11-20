@@ -436,20 +436,24 @@ def arqueiro_anda():
                             tentou_andar=0
                             turn = 0
                             print'andou norte depois de girar peão do baú\n'
+                            atualiza_ponto(-1)
                             return True
                     else:
                         rand_direcao = random.randint(1,2)
                         if rand_direcao == 1:
                             print'virou oeste', turn
+                            atualiza_ponto(-1)
                             direcao = 'oeste' #arqueiro_anda(x,y,'oeste')
                         else:
                             print'virou leste', turn
+                            atualiza_ponto(-1)
                             direcao = 'leste' #arqueiro_anda(x,y,'leste')
                 else:
                     if munda_local_arqueiro(x,y,x-1, y, direcao) == True:
                         tentou_andar=0
                         turn = 0
                         print  turn ,'andou norte\n'
+                        atualiza_ponto(-1)
                         return True
             else:
                 rand_direcao = random.randint(1,2)
@@ -457,10 +461,12 @@ def arqueiro_anda():
                 if rand_direcao == 1:
                     print'virou oeste', turn+1
                     turn = turn + 1
+                    atualiza_ponto(-1)
                     direcao = 'oeste' #arqueiro_anda(x,y,'oeste')
                 else:
                     print'virou leste', turn+1
                     turn = turn + 1
+                    atualiza_ponto(-1)
                     direcao = 'leste' #arqueiro_anda(x,y,'leste')
                     
                 
@@ -473,21 +479,25 @@ def arqueiro_anda():
                         if munda_local_arqueiro(x,y,x+1, y, direcao) == True:
                             tentou_andar=0
                             print'andou sul depois de girar peão do baú\n'
+                            atualiza_ponto(-1)
                             return True
                     else:
                         rand_direcao = random.randint(1,2)
                         if rand_direcao == 1:
                             print'virou leste', turn
+                            atualiza_ponto(-1)
                             direcao = 'leste' #arqueiro_anda(x,y,'leste')
                         else:
                             print 'virou oeste', turn
                             direcao = 'oeste'#arqueiro_anda(x,y,'oeste')
+                            atualiza_ponto(-1)
                         
                 else:
                         if munda_local_arqueiro(x,y,x+1, y, direcao) == True:
                             tentou_andar=0
                             turn = 0
                             print'andou sul\n'
+                            atualiza_ponto(-1)
                             return True
                         
             else:
@@ -496,11 +506,13 @@ def arqueiro_anda():
                     print'virou leste', turn+1
                     turn = turn + 1
                     direcao = 'leste' #arqueiro_anda(x,y, 'leste')
+                    atualiza_ponto(-1)
                     tentou_andar=tentou_andar+1
                 else:
                     print'virou oeste', turn+1
                     turn = turn + 1
                     direcao = 'oeste' #arqueiro_anda(x,y, 'leste')
+                    atualiza_ponto(-1)
                     tentou_andar=tentou_andar+1
                 
         elif(direcao == 'leste'):
@@ -513,20 +525,24 @@ def arqueiro_anda():
                             tentou_andar=0
                             turn =0
                             print'andou leste depois de girar peão do baú\n'
+                            atualiza_ponto(-1)
                             return True
                     else:
                         rand_direcao = random.randint(1,2)
                         if rand_direcao == 1:
                             print 'virou norte', turn
+                            atualiza_ponto(-1)
                             direcao = 'norte'
                         else:
                             print 'virou sul', turn
+                            atualiza_ponto(-1)
                             direcao = 'sul'
                 
                 else:
                     if munda_local_arqueiro(x,y,x, y+1, direcao) == True:
                         tentou_andar=0
                         turn =0
+                        atualiza_ponto(-1)
                         print'andou leste\n'
                         return True
                 
@@ -535,11 +551,13 @@ def arqueiro_anda():
                 if rand_direcao == 1:
                     print'virou norte', turn+1
                     turn = turn + 1
+                    atualiza_ponto(-1)
                     direcao = 'norte'  #arqueiro_anda(x,y,'norte')
                     tentou_andar=tentou_andar+1
                 else:
                     print'virou sul', turn+1
                     turn = turn + 1
+                    atualiza_ponto(-1)
                     direcao = 'sul'  #arqueiro_anda(x,y,'norte')
                     tentou_andar=tentou_andar+1
                 
@@ -553,6 +571,7 @@ def arqueiro_anda():
                             tentou_andar=0
                             turn = 0
                             print'andou oeste'
+                            atualiza_ponto(-1)
                             print '\n'
                             return True
                     else:
@@ -560,14 +579,17 @@ def arqueiro_anda():
                         if rand_direcao == 1:
                             print 'virou sul'
                             direcao = 'sul'
+                            atualiza_ponto(-1)
                         else:
                             print 'virou norte'
+                            atualiza_ponto(-1)
                             direcao = 'norte'
                 else:
                     if munda_local_arqueiro(x,y,x, y-1, direcao) == True:
                         tentou_andar=0
                         turn = 0
                         print'andou oeste'
+                        atualiza_ponto(-1)
                         print '\n'
                         return True
             else:
@@ -576,11 +598,13 @@ def arqueiro_anda():
                     print'virou sul', turn+1
                     turn = turn + 1
                     direcao = 'sul'     #arqueiro_anda(x,y,'sul')
+                    atualiza_ponto(-1)
                     tentou_andar=tentou_andar + 1
                 else:
                     print'virou norte', turn+1
                     turn = turn + 1
                     direcao = 'norte'     #arqueiro_anda(x,y,'sul')
+                    atualiza_ponto(-1)
                     tentou_andar=tentou_andar + 1
         #print 'SEI LA MANO TA MT LOCO\n'
         cont_repeticao = cont_repeticao + 1
@@ -605,11 +629,13 @@ def descobre_parede_adjacente(x,y):
 AQUI EM BAIXO FICAM OS TESTES DO CÓDIGO 
 ***************************************
 '''
+
 def main():
+    py_assert('database.pl',"local_arqueiro(1,1,oeste).")
     cont = 0
     while(True):
         sleep(1)
-        if cont > 5:
+        if cont > 100:
             return
         prolog.consult('database.pl')
         pontuacao = list(prolog.query('pontuacao(P)'))

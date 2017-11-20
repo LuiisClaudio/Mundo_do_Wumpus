@@ -174,10 +174,10 @@ parede(0,1).
 parede(1,0).
 parede(0,0).
 energia(100).
-local_arqueiro(1,1,sul).
+visitadas(1,1).
 
 
-/*
+
 ouro(11,2).
 ouro(3,5).
 ouro(9,11).
@@ -193,4 +193,5 @@ poco(4,8).
 poco(7,9).
 poco(10,10).
 poco(2,11).
-Vai começa a escrever aqui*/
+
+/*Vai começa a escrever aqui*/
