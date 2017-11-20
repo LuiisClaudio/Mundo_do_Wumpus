@@ -422,7 +422,7 @@ def arqueiro_anda():
     #print list(prolog.query("seguro(2,1)")), "(2,1) seguro acho"
     #print list(prolog.query("seguro(1,2)")) , "(1,2) seguro acho"
     percepcao, sentiu_brisa, sentiu_fedor, sentiu_brilho = faz_percepcao()
-    if percepcao == False:
+    if (percepcao == False or (percepcao == True and sentiu_brisa == False and sentiu_fedor == False and sentiu_brilho == True)):
         #print 'Faz os devidos asserts'
         #ADJACENTES SÃO SEGUROS PARA ANDAR DESDE QUE NÃO SEJAM PAREDE
         if (not detecta_parede(x+1,y)):
