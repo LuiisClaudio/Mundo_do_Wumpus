@@ -19,7 +19,6 @@
 :- dynamic tem_inimigo/2.
 :- dynamic tem_poco/2.
 :- dynamic inicio/2.
-:- dynamic powerup/2.
 :- dynamic ouro/2.
 :- dynamic inimigo/4.
 :- dynamic ouviu_passos_inimigo/2.
@@ -167,5 +166,8 @@ arqueiro_somar_energia(SOM) :- energia(E), EE is E+SOM, retract(energia(E)), ass
 arqueiro_subtrair_energia(SUB) :- SOM is SUB * -1, arqueiro_somar_energia(SOM).
 
 
-arqueiro_perdeu_municao() :- municao(Municao), NewAmmo is Municao - 1, retract(municao(Municao)), assert(municao(NewAmmo)), !
+arqueiro_perdeu_municao() :- municao(Municao), NewAmmo is Municao - 1, retract(municao(Municao)), assert(municao(NewAmmo)), !.
 
+tem_poco(X,Y) :- local_arqueiro(X,Y,_), poco(X,Y), !.
+tem_ouro(X,Y) :- local_arqueiro(X,Y,_), ouro(X,Y), !.
+tem_inimigo(X,Y) :- local_arqueiro(X,Y,_), inimigo(_,_,X,Y), !.

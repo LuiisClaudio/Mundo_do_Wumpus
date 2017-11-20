@@ -3,7 +3,7 @@ import random
 from time import sleep
 from interface import print_tabuleiro, preenche_tabuleiro
 
-from aux_pyswip import py_assert, py_retract, preenche_database
+from aux_pyswip import py_assert, py_retract, preenche_check
 
 def database_default(pl_file):
     with open(pl_file,"r+") as f:
@@ -21,7 +21,7 @@ def database_default(pl_file):
         f.truncate()
         f.close()
     return
-database_default('test.pl')
+database_default('database.pl')
 
 def cria_caverna():
     
@@ -131,7 +131,7 @@ def cria_caverna():
     for i in Tabuleiro:
         print i
     print 'Buracos:' ,buracao , '\tInimigos com 20 de dano:', inimigos_20, '\tInimigos com 50 de dano:', inimigos_50, '\tGold:', gold_ingodo 
-    #preenche_database(Tabuleiro)
+    preenche_check(Tabuleiro)
 cria_caverna()
 
 #isso aqui precisa estar no database, e é um começo para o prolog]
@@ -139,6 +139,7 @@ from pyswip import Prolog
 prolog = Prolog()
 tentou_andar=0
 prolog.consult('Mundo_do_Wumpus.pl')
+prolog.consult('check.pl')
 prolog.consult('database.pl')
 
 
@@ -150,8 +151,11 @@ def caiu_poco():
     poco = list(prolog.query('poco(%s,%s)'%(x,y)))
     if len(poco) == 0:
         return False
-    atualiza_ponto(-1000)
-    return True
+    tem_poco = list(prolog.query('tem_poco(%s,%s)'%(x,y)))
+    if len(tem_poco) > 0:
+        atualiza_ponto(-1000)
+        return True
+    return False
 
 def atualiza_energia(energia):
     prolog.consult('database.pl')
@@ -180,9 +184,12 @@ def pega_ouro():
     print len(ouro)
     if len(ouro) == 0:
         return False
-    py_retract('database.pl', 'ouro(%s,%s).' %(x, y))
-    atualiza_ponto(1000)
-    return True
+    tem_ouro = list(prolog.query('tem_ouro(%s,%s)'%(x,y)))
+    if len(tem_ouro) > 0:
+        py_retract('check.pl', 'ouro(%s,%s).' %(x, y))
+        atualiza_ponto(1000)
+        return True
+    return False
 
 def direcao_certa(x, y, xx, yy, direcao):
     if direcao == 'norte':
@@ -201,11 +208,20 @@ def direcao_certa(x, y, xx, yy, direcao):
         if yy > y:
             return True
         return False
-def inimigo_dano(x, y):
-    prolog.consult('database.pl')
-    inimigo = list(prolog.query('inimigo(D,V,%s,%s)'%(x,y)))
-    atualiza_ponto((-1)*inimigo[0].get('D'))
     
+def inimigo_dano():
+    prolog.consult('database.pl')
+    x, y, direcao = acha_coordenada_arqueiro()
+    inimigo = list(prolog.query('inimigo(D,V,%s,%s)'%(x,y)))
+    if len(inimigo) == 0:
+        return False
+    tem_inimigo = list(prolog.query('tem_inimigo(%s,%s)'%(x,y)))
+    if len(tem_inimigo) > 0:
+        atualiza_ponto((-1)*inimigo[0].get('D'))
+        atualiza_energia((-1)*inimigo[0].get('D'))
+        return True
+    return False
+
 def faz_dano(x, y, dano):
     prolog.consult('database.pl')
     inimigo = list(prolog.query('inimigo(D,V,%s,%s)'%(x,y)))
@@ -669,12 +685,17 @@ def main():
         #if(pontuacao[0].get('P') < 0):
             #return False
         if(energia[0].get('E') < 0):
-            return False
+            print 'Arqueiro morreu'
+            atualiza_pontuacao(-1000)
+            break
         print_tabuleiro(preenche_tabuleiro())
-        #Vou chamar andar
-        arqueiro_anda()
+        if arqueiro_anda() == True:
+            caiu_poco()
+            inimigo_dano()
+            pega_ouro()
+            
         cont = cont + 1
-#main()
+main()
 #atira()
 #pega_ouro()
 #inimigo_dano(10, 2)

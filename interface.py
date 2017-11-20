@@ -30,6 +30,7 @@ def print_list_line2(lst):
 
 def preenche_tabuleiro():
     prolog.consult('database.pl')
+    prolog.consult('check_interface.pl')
     tab_tam = 14
     tab = []*tab_tam
     
