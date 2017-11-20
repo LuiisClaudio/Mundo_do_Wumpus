@@ -4,6 +4,25 @@ from time import sleep
 from interface import print_tabuleiro, preenche_tabuleiro
 
 from aux_pyswip import py_assert, py_retract, preenche_database
+
+def database_default(pl_file):
+    with open(pl_file,"r+") as f:
+        fatos_default = [
+            'parede(0,1).\n',
+            'parede(1,0).\n',
+            'parede(0,0).\n',
+            'energia(100).\n',
+            'visitadas(1,1).\n',
+            'pontuacao(0).\n'
+            ]
+        f.seek(0)
+        for line in fatos_default:
+            f.write(line)
+        f.truncate()
+        f.close()
+    return
+database_default('test.pl')
+
 def cria_caverna():
     
     
@@ -112,7 +131,7 @@ def cria_caverna():
     for i in Tabuleiro:
         print i
     print 'Buracos:' ,buracao , '\tInimigos com 20 de dano:', inimigos_20, '\tInimigos com 50 de dano:', inimigos_50, '\tGold:', gold_ingodo 
-    preenche_database(Tabuleiro)
+    #preenche_database(Tabuleiro)
 cria_caverna()
 
 #isso aqui precisa estar no database, e é um começo para o prolog]
@@ -654,7 +673,7 @@ def main():
         #Vou chamar andar
         arqueiro_anda()
         cont = cont + 1
-main()
+#main()
 #atira()
 #pega_ouro()
 #inimigo_dano(10, 2)
