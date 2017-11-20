@@ -40,14 +40,11 @@ estado_atual_arqueiro(X, Y, Direcao, Energia, Pontuacao, Municao) :- local_arque
 
 %Percepcoes FUNCIONA
 sentiu_brisa_poco(X, Y) :- adjacente(X, Y, XX, YY), poco(XX, YY), !. 
-sentiu_brisa_poco() :- local_arqueiro(X, Y, _), sentiu_brisa_poco(X, Y), !.
 
 
 sentiu_fedor(X, Y) :- adjacente(X, Y, XX, YY), inimigo(_, _, XX, YY), !.
-sentiu_fedor() :- local_arqueiro(X, Y, _), sentiu_fedor(X, Y), !.
 
 sentiu_alguma_coisa(X, Y) :- sentiu_brisa_poco(X, Y); sentiu_fedor(X, Y), !.
-sentiu_alguma_coisa() :- local_arqueiro(X, Y, _), sentiu_alguma_coisa(X, Y), !.
 
 
 %Movimentos
@@ -81,55 +78,6 @@ descobre_adjacente_pode_ter_inimigo() :-
 	(( XXX is X-1, adjacente(X, Y, XXX, Y), descobre_pode_ter_inimigo(XXX, Y) );1=1),
 	(( YY is Y+1, adjacente(X, Y, X, YY), descobre_pode_ter_inimigo(X, YY) );1=1),
 (( YYY is Y-1, adjacente(X, Y, X, YYY), descobre_pode_ter_inimigo(X, YYY) );1=1), !.
-
-
-%Atualiza todas as certezas do arqueiro
-
-atualizar_certezas_inimigo() :- 
-	inimigo(_, _, X, Y),
-	pode_ter_inimigo(X, Y),
-	XA is X+1, XB is X-1, YA is Y+1, YB is Y-1,
-	(
-		((parede(XA, Y));visitadas(XA,Y)),
-		((parede(XB, Y));visitadas(XB,Y)),
-		((parede(X, YA));visitadas(X,YA)),
-		((parede(X, YB));visitadas(X,YB))
-	),
-	retractall(pode_ter_inimigo(X, Y)), assert(tem_inimigo(X, Y)).
-	
-	
-atualizar_certezas_poco() :-
-	poco(X, Y),
-	pode_ter_poco(X, Y),
-	XA is X+1, XB is X-1, YA is Y+1, YB is Y-1,
-	(
-		((parede(XA, Y));visitadas(XA,Y)),
-		((parede(XB, Y));visitadas(XB,Y)),
-		((parede(X, YA));visitadas(X,YA)),
-		((parede(X, YB));visitadas(X,YB))
-	),
-	retractall(pode_ter_poco(X, Y)), assert(tem_poco(X, Y)).
-	
-atualizar_certezas_geral() :-
-	(atualizar_certezas_inimigo();1=1),
-	(atualizar_certezas_poco();1=1), !.
-
-remover_incertezas_casa_atual() :- 
-		local_arqueiro(X, Y, _),
-		(
-			((not(poco(X, Y)), assert(nao_tem_poco(X, Y)), retractall(pode_ter_poco(X, Y)));1=1),
-			((not(inimigo(_, _, X, Y)), assert(nao_tem_inimigo(X, Y)), retractall(pode_ter_inimigo(X, Y)));1=1)
-		), !.
-
-atualizar_incertezas() :- (
-		(remover_incertezas_casa_atual();1=1),
-		((sentiu_brisa_poco(), descobre_poco_adjacente());1=1),
-		(descobre_adjacente_pode_ter_inimigo();1=1),
-		(( not(sentiu_brisa_poco()), remover_incertezas_pocos_adjacentes() );1=1),
-		(remover_incertezas_inimigos_adjacentes() ;1=1),
-		((atualizar_certezas_geral());1=1)
-	), !.
-
 
 
 

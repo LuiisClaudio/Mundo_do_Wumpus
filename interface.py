@@ -31,6 +31,7 @@ def print_list_line2(lst):
 def preenche_tabuleiro():
     prolog.consult('database.pl')
     prolog.consult('check_interface.pl')
+    prolog.consult('Mundo_do_Wumpus.pl')
     tab_tam = 14
     tab = []*tab_tam
     
@@ -40,6 +41,8 @@ def preenche_tabuleiro():
     ouro = list(prolog.query("ouro(X, Y)"))
     parede = list(prolog.query("parede(X, Y)"))
     visitadas = list(prolog.query("visitadas(X, Y)"))
+    #brisa = list(prolog.query("sentiu_brisa_poco(X, Y)"))
+    #fedor = list(prolog.query("sentiu_fedor(X, Y)"))
     
     #print 'arqueiro', arqueiro
     #print 'poco', poco
@@ -70,6 +73,14 @@ def preenche_tabuleiro():
             if i.get('X') == j.get('X') and  i.get('Y') == j.get('Y'):
                 tab[x][y] = 'O'
                 #print tab[x][y]
+        '''for j in brisa:
+            if i.get('X') == j.get('X') and  i.get('Y') == j.get('Y'):
+                tab[x][y] = 'B'
+                #print tab[x][y]
+        for j in fedor:
+            if i.get('X') == j.get('X') and  i.get('Y') == j.get('Y'):
+                tab[x][y] = 'F'
+                #print tab[x][y]'''
                 
     tab[arqueiro[0].get('X')][arqueiro[0].get('Y')] = 'A'
 
