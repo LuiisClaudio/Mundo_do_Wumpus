@@ -478,7 +478,7 @@ def arqueiro_anda():
                         > tenta anda -> ja visitou/dangerous > turn+1 = 4
                         /\ >>>>>>>>>>>> 5 TEM QUE IR
                     '''
-                    if turn > random.randint(4,9):#
+                    if turn > random.randint(2,4):#
                         if munda_local_arqueiro(x,y,x-1, y, direcao) == True:
                             tentou_andar=0
                             turn = 0
@@ -522,7 +522,7 @@ def arqueiro_anda():
                 if (len(list(prolog.query("visitadas(%s,%s)" %(x+1,y))))>0):
                     print 'ja passei aqui sul' , turn
                     turn = turn + 1
-                    if turn > random.randint(4,9):
+                    if turn > random.randint(2,4):
                         if munda_local_arqueiro(x,y,x+1, y, direcao) == True:
                             tentou_andar=0
                             print'andou sul depois de girar peão do baú\n'
@@ -567,7 +567,7 @@ def arqueiro_anda():
                 if (len(list(prolog.query("visitadas(%s,%s)" %(x,y+1))))>0):
                     print 'ja passei aqui leste' , turn
                     turn = turn + 1
-                    if turn > random.randint(4,9):
+                    if turn > random.randint(2,4):
                         if munda_local_arqueiro(x,y,x, y+1, direcao) == True:
                             tentou_andar=0
                             turn =0
@@ -613,7 +613,7 @@ def arqueiro_anda():
                 if (len(list(prolog.query("visitadas(%s,%s)" %(x,y-1))))>0):
                     print 'ja passei aqui oeste' , turn
                     turn = turn + 1
-                    if turn > random.randint(4,9):
+                    if turn > random.randint(2,4):
                         if munda_local_arqueiro(x,y,x, y-1, direcao) == True:
                             tentou_andar=0
                             turn = 0
