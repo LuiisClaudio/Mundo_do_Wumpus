@@ -155,19 +155,6 @@ remover_incertezas_inimigos_adjacentes() :-
 	(( YY is Y+1, adjacente(X, Y, X, YY), remover_incertezas_inimigos_adjacentes(X, YY) );1=1),
 	(( YYY is Y-1, adjacente(X, Y, X, YYY), remover_incertezas_inimigos_adjacentes(X, YYY) );1=1), !.
 
-
-
-%Atualiza pontuação
-
-arqueiro_somar_pontuacao(SOM) :- pontuacao(C), CC is C+SOM, retract(pontuacao(C)), assert(pontuacao(CC)).
-arqueiro_subtrair_pontuacao(SUB) :- SOM is SUB * -1, arqueiro_somar_pontuacao(SOM).
-
-arqueiro_somar_energia(SOM) :- energia(E), EE is E+SOM, retract(energia(E)), assert(energia(EE)).
-arqueiro_subtrair_energia(SUB) :- SOM is SUB * -1, arqueiro_somar_energia(SOM).
-
-
-arqueiro_perdeu_municao() :- municao(Municao), NewAmmo is Municao - 1, retract(municao(Municao)), assert(municao(NewAmmo)), !.
-
 tem_poco(X,Y) :- local_arqueiro(X,Y,_), poco(X,Y), !.
 tem_ouro(X,Y) :- local_arqueiro(X,Y,_), ouro(X,Y), !.
 tem_inimigo(X,Y) :- local_arqueiro(X,Y,_), inimigo(_,_,X,Y), !.

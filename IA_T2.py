@@ -13,7 +13,8 @@ def database_default(pl_file):
             'parede(0,0).\n',
             'energia(100).\n',
             'visitadas(1,1).\n',
-            'pontuacao(0).\n'
+            'pontuacao(0).\n',
+            'municao(5).\n'
             ]
         f.seek(0)
         for line in fatos_default:
@@ -157,6 +158,16 @@ def caiu_poco():
         return True
     return False
 
+def atualiza_municao(total):
+    prolog.consult('database.pl')
+    municao = list(prolog.query('municao(B)'))
+    if len(municao) == 0:
+        py_assert('database.pl', 'municao(0).')
+        return False
+    py_retract('database.pl', 'municao(%s).' %(municao[0].get('B')))
+    total_novo = municao[0].get('B') + total
+    py_assert('database.pl', 'municao(%s).' %(total_novo))
+    
 def atualiza_energia(energia):
     prolog.consult('database.pl')
     energias = list(prolog.query('energia(E)'))
@@ -235,6 +246,7 @@ def faz_dano(x, y, dano):
 
 def atira():
     atualiza_ponto(-10)
+    atualiza_municao(-1)
     prolog.consult('database.pl')
     x, y, direcao = acha_coordenada_arqueiro()
     inimigo = list(prolog.query("inimigo(D, V, X,Y)"))
@@ -422,7 +434,7 @@ def arqueiro_anda():
     #print list(prolog.query("seguro(2,1)")), "(2,1) seguro acho"
     #print list(prolog.query("seguro(1,2)")) , "(1,2) seguro acho"
     percepcao, sentiu_brisa, sentiu_fedor, sentiu_brilho = faz_percepcao()
-    if (percepcao == False or (percepcao == True and sentiu_brisa == False and sentiu_fedor == False and sentiu_brilho == True)):
+    if percepcao == False:
         #print 'Faz os devidos asserts'
         #ADJACENTES SÃO SEGUROS PARA ANDAR DESDE QUE NÃO SEJAM PAREDE
         if (not detecta_parede(x+1,y)):
