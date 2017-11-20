@@ -608,8 +608,8 @@ AQUI EM BAIXO FICAM OS TESTES DO CÓDIGO
 def main():
     cont = 0
     while(True):
-        sleep(0)
-        if cont > 100:
+        sleep(1)
+        if cont > 5:
             return
         prolog.consult('database.pl')
         pontuacao = list(prolog.query('pontuacao(P)'))
