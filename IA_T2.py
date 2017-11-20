@@ -189,7 +189,7 @@ def atualiza_ponto(ponto):
     py_assert('database.pl', 'pontuacao(%s).' %(pontos))
     
 def pega_ouro():
-    prolog.consult('database.pl') 
+    prolog.consult('check.pl') 
     x, y, direcao = acha_coordenada_arqueiro()
     ouro = list(prolog.query('ouro(%s,%s)'%(x,y)))
     print len(ouro)
