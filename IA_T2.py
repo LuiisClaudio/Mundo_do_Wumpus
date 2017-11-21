@@ -232,8 +232,9 @@ def faz_dano(x, y, dano):
         return True
     print 'inimigo(%s,%s,%s,%s).'%(inimigo[0].get('D'),vida_inimigo,x,y), 'tem_inimgo(%s,%s)' %(x, y)
     py_assert('database.pl', 'inimigo(%s,%s,%s,%s).'%(inimigo[0].get('D'),vida_inimigo,x,y) )
-    py_assert('database.pl', 'tem_inimgo(%s,%s)' %(x, y))
+    py_assert('database.pl', 'tem_inimgo(%s,%s).' %(x, y))
     return False
+
 def acerta_inimigo(x, y, d, xx, yy):
     if   x > xx and y == y:
         return True
@@ -383,7 +384,7 @@ def sentiu_fedor(x, y):
     return False
 
 #print 'Sentiu brisa ', sentiu_brisa(1,1)
-print 'Sentiu fedor ', sentiu_fedor(1,1)
+#print 'Sentiu fedor ', sentiu_fedor(1,1)
 def faz_percepcao():
     'entrou na percepcao'
     prolog.consult('database.pl')
@@ -728,16 +729,19 @@ def descobre_parede_adjacente(x,y):
 AQUI EM BAIXO FICAM OS TESTES DO CÓDIGO 
 ***************************************
 '''
+    
 def decide_se_atira(estado):
-    prolog.consult('check.pl')
+    prolog.consult('database.pl')
     x, y, direcao = acha_coordenada_arqueiro()
     sentiu_fedor = list(prolog.query('sentiu_fedor(%s,%s)' %(x,y)))
+    print sentiu_fedor
     if len(sentiu_fedor) > 0:
         if estado > 10:
             atira()
         return True
     return False
 decide_se_atira(20)
+decide_se_atira(0)
 def main():
     cont = 0
     cont_ouro = 0
