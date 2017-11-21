@@ -25,7 +25,8 @@
 :- dynamic seguro/2.
 :- dynamic sentiu_brisa/2.
 :- dynamic estado/3.
-
+:- dynamic muda_estado/2.
+:- dynamic sentiu_fedor_in/2.
 
 %funcionou
 adjacente(X, Y, XX, Y) :- XX is X+1, pode_ser_acessada(XX, Y).
