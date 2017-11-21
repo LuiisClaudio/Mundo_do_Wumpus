@@ -504,6 +504,7 @@ def arqueiro_anda(cont_ouro):
     #print list(prolog.query("seguro(1,2)")) , "(1,2) seguro acho"
     percepcao, sentiu_brisa, sentiu_fedor, sentiu_brilho = faz_percepcao()
     if percepcao == False:
+        
         #print 'Faz os devidos asserts'
         #ADJACENTES SÃO SEGUROS PARA ANDAR DESDE QUE NÃO SEJAM PAREDE
         if (not detecta_parede(x+1,y)):
@@ -521,7 +522,25 @@ def arqueiro_anda(cont_ouro):
         if (not detecta_parede(x,y-1)):
             if (len(list(prolog.query("seguro(%s,%s)"%(x,y-1))))<1):
                 py_assert('database.pl',"seguro(%s,%s)."%(x,y-1))
-            
+                
+                
+    else:
+        if sentiu_brisa:
+            print 'entrei no if da brisa'
+            sleep(1)
+            if (len(list(prolog.query("sentiu_brisa(%s,%s)"%(x,y))))<1):
+        
+                py_assert('database.pl', "sentiu_brisa(%s,%s)."%(x,y))
+                print 'sentiu brisa'
+                sleep(1)
+        if sentiu_fedor:
+            print 'entrei no if do fedor'
+            sleep(1)
+            if( len(list(prolog.query("sentiu_fedor_in(%s,%s)"%(x,y))))<1):
+                py_assert('database.pl',"sentiu_fedor_in(%s,%s)."%(x,y))
+                print 'sentiu fedor'
+                sleep(1)
+                
     turn = 0
     while(True):
 
