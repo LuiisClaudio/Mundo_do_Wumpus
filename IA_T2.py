@@ -536,6 +536,7 @@ def arqueiro_anda(cont_ouro):
         if sentiu_fedor:
             print 'entrei no if do fedor'
             sleep(1)
+            prolog.query("muda_estado(%s,%s)"%(x,y))
             if( len(list(prolog.query("sentiu_fedor_in(%s,%s)"%(x,y))))<1):
                 py_assert('database.pl',"sentiu_fedor_in(%s,%s)."%(x,y))
                 print 'sentiu fedor'
@@ -796,8 +797,8 @@ def main():
     cont = 0
     cont_ouro = 0
     while(True):
-        sleep(1)
-        if cont > 100:
+        sleep(0)
+        if cont > 200:
             return
         prolog.consult('database.pl')
         pontuacao = list(prolog.query('pontuacao(P)'))
