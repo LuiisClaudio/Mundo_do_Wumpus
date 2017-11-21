@@ -19,10 +19,10 @@ def database_default(pl_file):
 			
 	    ##Não deve entrar no default
 	    
-	    ,'inimigo(20, 100, 2, 1).\n',
-            'tem_inimigo(2,1).\n',
-            'poco(2,1).\n',
-            'tem_inimigo(1,2).\n'
+	    #,'inimigo(20, 100, 2, 1).\n',
+            #'tem_inimigo(2,1).\n',
+            #'poco(2,1).\n',
+            #'tem_inimigo(1,2).\n'
             ]
         f.seek(0)
         for line in fatos_default:
@@ -173,12 +173,7 @@ def atualiza_estado(x, y):
         py_assert('database.pl', 'estado(%s,%s,1).'%(x,y))
         return False
     py_retract('database.pl', 'estado(%s,%s,%s).' %(x,y,estado[0].get('T')))
-    py_assert('database.pl', 'estado(%s,%s,%s).' %(x,y,int(estado[0].get('T'))+ 1))
-atualiza_estado(1,1)    
-atualiza_estado(1,1)
-atualiza_estado(1,1)
-atualiza_estado(1,1)
-atualiza_estado(1,1)  
+    py_assert('database.pl', 'estado(%s,%s,%s).' %(x,y,int(estado[0].get('T'))+ 1)) 
 def atualiza_municao(total):
     prolog.consult('database.pl')
     municao = list(prolog.query('municao(B)'))
@@ -759,8 +754,13 @@ def decide_se_atira(estado):
             atira()
         return True
     return False
-decide_se_atira(20)
-decide_se_atira(0)
+#decide_se_atira(20)
+#decide_se_atira(0)
+def extrai_estado(x, y):
+    estado = pontuacao = list(prolog.query('estado(%s,%s, T)'))
+    if len(estado) == 0:
+        return 0
+    return int(estado[0].get('T'))
 def main():
     cont = 0
     cont_ouro = 0
@@ -785,13 +785,17 @@ def main():
             break
         print_tabuleiro(preenche_tabuleiro())
         if arqueiro_anda(cont_ouro) == True:
+            x, y, direcao = acha_coordenada_arqueiro()
+            atualiza_estado(x,y)
+            #decide_se_atira(extrai_estado(x,y))
+            #print extrai_estado(x,y)
             caiu_poco()
             inimigo_dano()
             if pega_ouro() == True:
                 cont_ouro = cont_ouro + 1
-                
+        return 
         cont = cont + 1
-#main()
+main()
 #atira()
 #pega_ouro()
 #inimigo_dano(10, 2)
