@@ -37,7 +37,7 @@ adjacente(X, Y, X, YY) :- YY is Y-1, pode_ser_acessada(X, YY).
 %funcionou
 pode_ser_acessada(X, Y) :- inicio(X, Y); vazia(X, Y); tem_inimigo(X, Y); ouro(X, Y); poco(X, Y);!. 
 
-mesmo_local_inimigo(X,Y) :- inimigo(, , XX, YY), local_arqueiro(X, Y, _), !.
+mesmo_local_inimigo(X,Y) :- inimigo(_, _, XX, YY), local_arqueiro(X, Y, _), !.
 
 
 deu_dano(X, Y, D, Z, W) :- X > Z, Y == W,  D == norte.
@@ -58,7 +58,7 @@ inimigo_a_frente(X, Y, D) :- T is Y + 1, D == oeste, tem_inimigo(X, T).
 sentiu_brisa_poco(X, Y) :- adjacente(X, Y, XX, YY), poco(XX, YY), !. 
 
 
-sentiu_fedor(X, Y) :- adjacente(X, Y, XX, YY), inimigo(, , XX, YY), !.
+sentiu_fedor(X, Y) :- adjacente(X, Y, XX, YY), inimigo(_, _, XX, YY), !.
 
 sentiu_alguma_coisa(X, Y) :- sentiu_brisa_poco(X, Y); sentiu_fedor(X, Y), !.
 
