@@ -15,12 +15,12 @@ def database_default(pl_file):
             'local_arqueiro(1,1,oeste).\n'
             'visitadas(1,1).\n',
             'pontuacao(0).\n',
-            'municao(5).\n',
-            'tem_inimigo(2,1).\n'
+            'municao(5).\n'
 			
 	    ##Não deve entrar no default
 	    
 	    ,'inimigo(20, 100, 2, 1).\n',
+            'tem_inimigo(2,1).\n',
             'poco(2,1).\n',
             'tem_inimigo(1,2).\n'
             ]
@@ -232,8 +232,9 @@ def faz_dano(x, y, dano):
     if vida_inimigo <= 0:
         py_assert('database.pl', 'inimigo_grito(%s,%s)'%(x, y))
         return True
-    print 'inimigo(%s,%s,%s,%s).'%(inimigo[0].get('D'),vida_inimigo,x,y), 'tem_inimgo(%s,%s)' %(x, y)
+    print 'inimigo(%s,%s,%s,%s).'%(inimigo[0].get('D'),vida_inimigo,x,y), '\ntem_inimigo(%s,%s).' %(x, y)
     py_assert('database.pl', 'inimigo(%s,%s,%s,%s).'%(inimigo[0].get('D'),vida_inimigo,x,y) )
+    py_retract('database.pl', 'tem_inimigo(%s,%s).' %(x, y))
     py_assert('database.pl', 'tem_inimigo(%s,%s).' %(x, y))
     return False
 
@@ -247,6 +248,7 @@ def acerta_inimigo(x, y, d, xx, yy):
     elif y > yy and x == x:
         return True
     return False
+
 def atira():
     print 'Vou atirar'
     atualiza_ponto(-10)
@@ -255,12 +257,8 @@ def atira():
     prolog.consult('Mundo_do_Wumpus.pl')
     x, y, direcao = acha_coordenada_arqueiro()
     inimigo = list(prolog.query("inimigo(D, V, X,Y)"))
-    print inimigo
     for i in inimigo:
         deu_dano = list(prolog.query("deu_dano(%s,%s,%s,%s,%s)" %(x, y, direcao,i.get('X'), i.get('Y'))))
-        print deu_dano
-        print x, y, direcao,i.get('X'), i.get('Y')
-        print len(deu_dano)
         print 'Posso acertar alguem'
         if len(deu_dano) > 0 or acerta_inimigo(x, y, direcao,i.get('X'), i.get('Y')) ==True:
             print 'Dei dano'
