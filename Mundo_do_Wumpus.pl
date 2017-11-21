@@ -25,6 +25,10 @@
 :- dynamic seguro/2.
 :- dynamic sentiu_brisa/2.
 :- dynamic estado/3.
+<<<<<<< HEAD
+=======
+:- dynamic muda_estado/2.
+>>>>>>> 13b0a65a951e4b8a1c0eec30aa5e8f1d8da0bc49
 :- dynamic sentiu_fedor_in/2.
 
 %funcionou
