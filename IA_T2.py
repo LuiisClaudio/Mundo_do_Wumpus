@@ -74,6 +74,9 @@ def cria_caverna():
         new_local=[]
         col_num = random.randint(1,12)
         lin_num = random.randint(1,12)
+        if ((col_num==1 and lin_num==2) or (col_num==2 and lin_num==1) or (col_num==2 and lin_num==2)):
+            col_num = random.randint(1,12)
+            lin_num = random.randint(1,12)
         new_local.append(col_num)
         new_local.append(lin_num)
         if new_local not in lista_locais_usados:
@@ -87,6 +90,9 @@ def cria_caverna():
         new_local=[]
         col_num = random.randint(1,12)
         lin_num = random.randint(1,12)
+        if ((col_num==1 and lin_num==2) or (col_num==2 and lin_num==1) or (col_num==2 and lin_num==2)):
+            col_num = random.randint(1,12)
+            lin_num = random.randint(1,12)
         new_local.append(col_num)
         new_local.append(lin_num)
         if new_local not in lista_locais_usados:
@@ -100,6 +106,9 @@ def cria_caverna():
         new_local=[]
         col_num = random.randint(1,12)
         lin_num = random.randint(1,12)
+        if ((col_num==1 and lin_num==2) or (col_num==2 and lin_num==1) or (col_num==2 and lin_num==2)):
+            col_num = random.randint(1,12)
+            lin_num = random.randint(1,12)
         new_local.append(col_num)
         new_local.append(lin_num)
         if new_local not in lista_locais_usados:
@@ -723,15 +732,18 @@ def arqueiro_anda(cont_ouro):
 #ela descobre paredes adjacentes ao arqueiro e coloca no db
 def descobre_parede_adjacente(x,y):
     if(x==1):
-        py_assert('database.pl',"parede(%s, %s)." %(x-1,y))
+        if (len(list(prolog.query("parede(%s,%s)"%(x-1,y))))<1):
+            py_assert('database.pl',"parede(%s, %s)." %(x-1,y))
     elif(x==12):
-        py_assert('database.pl',"parede(%s, %s)." %(x+1, y))
+        if (len(list(prolog.query("parede(%s,%s)"%(x+1,y))))<1):
+            py_assert('database.pl',"parede(%s, %s)." %(x+1,y))
     if(y==1):
-        py_assert('database.pl',"parede(%s,%s)." %(x,y-1))
+        if (len(list(prolog.query("parede(%s,%s)"%(x,y-1))))<1):
+            py_assert('database.pl',"parede(%s,%s)." %(x,y-1))
     elif(y==12):
-        py_assert('database.pl',"parede(%s,%s)."%(x,y+1))
+        if (len(list(prolog.query("parede(%s,%s)"%(x,y+1))))<1):
+            py_assert('database.pl',"parede(%s,%s)."%(x,y+1))
     return True
-
 '''
 ***************************************
 AQUI EM BAIXO FICAM OS TESTES DO CÓDIGO 
@@ -793,6 +805,7 @@ def main():
             inimigo_dano()
             if pega_ouro() == True:
                 cont_ouro = cont_ouro + 1
+            print pontuacao[0].get('P')
         return 
         cont = cont + 1
 main()
