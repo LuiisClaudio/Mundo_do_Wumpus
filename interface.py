@@ -37,7 +37,7 @@ def preenche_tabuleiro():
     
     arqueiro = list(prolog.query("local_arqueiro(X, Y, D)"))
     poco = list(prolog.query("poco(X, Y)"))
-    inimigo = list(prolog.query("inimigo(Z, W, X, Y)"))
+    inimigo = list(prolog.query("inimigo(X, Y, Z, W)"))
     ouro = list(prolog.query("ouro(X, Y)"))
     parede = list(prolog.query("parede(X, Y)"))
     visitadas = list(prolog.query("visitadas(X, Y)"))
@@ -50,7 +50,6 @@ def preenche_tabuleiro():
     #print 'ouro', ouro
     #print 'parede', parede
     #print 'visitadas', visitadas
-    
     
     for i in range(tab_tam):
     	tab.append(['?']*tab_tam)
