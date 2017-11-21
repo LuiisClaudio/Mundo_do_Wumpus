@@ -270,7 +270,7 @@ def atira():
     print 'Vou atirar'
     atualiza_ponto(-10)
     atualiza_municao(-1)
-    prolog.consult('database.pl')#prolog.consult('check.pl')
+    prolog.consult('check.pl')
     prolog.consult('Mundo_do_Wumpus.pl')
     x, y, direcao = acha_coordenada_arqueiro()
     inimigo = list(prolog.query("inimigo(D, V, X,Y)"))
@@ -295,7 +295,7 @@ def acha_coordenada_arqueiro():
     return x,y,direcao
 #print acha_coordenada_arqueiro()    
 def ret_sentiu_brisa_poco(x, y):
-    prolog.consult('database.pl')
+    prolog.consult('check.pl')
     sente_brisa = list(prolog.query("sentiu_brisa_poco(%s,%s)"%(x, y)))
     if len(sente_brisa) == 0:
         return False
@@ -335,14 +335,14 @@ def assert_pode_ter_poco(x, y):
 #assert_pode_ter_poco(1,1)
         
 def ret_sentiu_fedor(x, y):
-    prolog.consult('database.pl')
+    prolog.consult('check.pl')
     sentiu_fedor = list(prolog.query("sentiu_fedor(%s,%s)"%(x, y)))
     if len(sentiu_fedor) == 0:
         return False
     return True
 
 def ret_sentiu_brilho(x, y):
-    prolog.consult('database.pl')
+    prolog.consult('check.pl')
     sentiu_brilho = list(prolog.query("ouro(%s,%s)"%(x, y)))
     if len(sentiu_brilho) == 0:
         return False
@@ -778,17 +778,18 @@ def decide_se_atira(estado):
     inimigo_a_frente = list(prolog.query('inimigo_a_frente(%s,%s,%s)' %(x,y, direcao)))
     if len(inimigo_a_frente) > 0:
         print 'Tem inimigo a frente'
-        if estado > 10:
+        if estado > 4:
             atira()
             return True
     if len(sentiu_fedor) > 0:
-        if estado > 10:
+        if estado > 4:
             atira()
         return True
     return False
 #decide_se_atira(20)
 #decide_se_atira(0)
 def extrai_estado(x, y):
+    prolog.consult('database.pl')
     estado = list(prolog.query('estado(%s,%s, T)' %(x,y)))
     if len(estado) == 0:
         return 0
