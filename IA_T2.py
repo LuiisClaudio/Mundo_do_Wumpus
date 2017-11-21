@@ -769,7 +769,7 @@ def decide_se_atira(estado):
 #decide_se_atira(20)
 #decide_se_atira(0)
 def extrai_estado(x, y):
-    estado = pontuacao = list(prolog.query('estado(%s,%s, T)'))
+    estado = list(prolog.query('estado(%s,%s, T)' %(x,y)))
     if len(estado) == 0:
         return 0
     return int(estado[0].get('T'))
@@ -799,14 +799,12 @@ def main():
         if arqueiro_anda(cont_ouro) == True:
             x, y, direcao = acha_coordenada_arqueiro()
             atualiza_estado(x,y)
-            #decide_se_atira(extrai_estado(x,y))
-            #print extrai_estado(x,y)
+            decide_se_atira(extrai_estado(x,y))
             caiu_poco()
             inimigo_dano()
             if pega_ouro() == True:
                 cont_ouro = cont_ouro + 1
-            print pontuacao[0].get('P')
-        return 
+            print pontuacao[0].get('P') 
         cont = cont + 1
 main()
 #atira()
