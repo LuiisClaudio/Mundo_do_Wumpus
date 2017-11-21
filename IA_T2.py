@@ -70,7 +70,7 @@ def cria_caverna():
         
         print i
     #cria os inimigos que dao 20 de dano
-    while(inimigos_20 <20):
+    while(inimigos_20 <2):
         new_local=[]
         col_num = random.randint(1,12)
         lin_num = random.randint(1,12)
@@ -532,11 +532,12 @@ def arqueiro_anda(cont_ouro):
         
                 py_assert('database.pl', "sentiu_brisa(%s,%s)."%(x,y))
                 print 'sentiu brisa'
-                sleep(1)
+                #sleep(1)
         if sentiu_fedor:
             print 'entrei no if do fedor'
             #sleep(1)
             prolog.query("muda_estado(%s,%s)"%(x,y))
+            print list(prolog.query('estado(%s,%s,X)'%(x,y)))
             if( len(list(prolog.query("sentiu_fedor_in(%s,%s)"%(x,y))))<1):
                 py_assert('database.pl',"sentiu_fedor_in(%s,%s)."%(x,y))
                 #print 'sentiu fedor'
@@ -748,7 +749,108 @@ def arqueiro_anda(cont_ouro):
         
         
 
-			
+def volta_casa(x,y,direcao):
+    prolog.consult('database.pl')
+    print 'x = ', x, ' y = ', y , 'direcao = ' ,direcao
+    print_tabuleiro(preenche_tabuleiro())
+    while (x>1 and y>1):
+        prolog.consult('database.pl')
+        print_tabuleiro(preenche_tabuleiro())
+        if (x>=y):
+            if ((len(list(prolog.query("seguro(%s,%s)"%(x-1,y))))>0) and (len(list(prolog.query("passou_voltando(%s,%s)"%(x-1,y))))<0)):
+                if (direcao == 'sul'):
+                    atualiza_ponto(-2)
+                elif ((direcao == 'oeste') or (direcao == 'leste')):
+                    atualiza_ponto(-1)
+                direcao = 'norte'
+                if munda_local_arqueiro(x,y,x-1,y,direcao):
+                    atualiza_ponto(-1)
+                    py_assert('database.pl', "passou_voltando(%s,%s)."%(x-1,y))
+                    x= x-1
+                    
+            elif ((len(list(prolog.query("seguro(%s,%s)"%(x,y-1))))>0)and (len(list(prolog.query("passou_voltando(%s,%s)"%(x,y-1))))<0)):
+                if ((direcao == 'norte') or (direcao == 'sul')):
+                        atualiza_ponto(-1)
+                elif (direcao == 'leste'):
+                        atualiza_ponto(-2)
+                direcao == 'oeste'
+                if (munda_local_arqueiro(x,y,x,y-1,direcao)):
+                    atualiza_ponto(-1)
+                    py_assert('database.pl', "passou_voltando(%s,%s)."%(x,y-1))
+                    y=y-1
+                    
+            elif(len(list(prolog.query("seguro(%s,%s)"%(x+1,y))))>0):
+                if (direcao == 'norte'):
+                    atualiza_ponto(-2)
+                elif ((direcao == 'oeste') or (direcao=='leste')):
+                    atualiza_ponto(-1)
+                direcao = 'sul'
+                if (munda_local_arqueiro(x,y,x+1,y,direcao)):
+                    atualiza_ponto(-1)
+                    py_assert('database.pl', "passou_voltando(%s,%s)."%(x+1,y))
+                    x=x+1
+                    
+            elif(len(list(prolog.query("seguro(%s,%s)"%(x,y+1))))>0):
+                if ((direcao=='norte') or (direcao == 'sul')):
+                    atualiza_ponto(-1)
+                elif direcao == 'oeste':
+                    atualiza_ponto(-2)
+                direcao = 'leste'
+                if(munda_local_arqueiro(x,y,x,y+1,direcao)):
+                    atualiza_ponto(-1)
+                    py_assert('database.pl', "passou_voltando(%s,%s)."%(x,y+1))
+                    y=y+1
+                    
+        elif (x<y):
+            if (len(list(prolog.query("seguro(%s,%s)"%(x,y-1))))>0 and (len(list(prolog.query("passou_voltando(%s,%s)"%(x,y-1))))<0)):
+                if ((direcao == 'norte') or (direcao == 'sul')):
+                    atualiza_ponto(-1)
+                elif (direcao == 'leste'):
+                    atualiza_ponto(-2)
+                direcao == 'oeste'
+                if (munda_local_arqueiro(x,y,x,y-1,direcao)):
+                    atualiza_ponto(-1)
+                    py_assert('database.pl', "passou_voltando(%s,%s)."%(x,y-1))
+                    y=y-1
+                    
+            elif (len(list(prolog.query("seguro(%s,%s)"%(x-1,y))))>0 and (len(list(prolog.query("passou_voltando(%s,%s)"%(x-1,y))))<0)):
+                if (direcao == 'sul'):
+                    atualiza_ponto(-2)
+                elif ((direcao == 'oeste') or (direcao == 'leste')):
+                    atualiza_ponto(-1)
+                direcao = 'norte'
+                if munda_local_arqueiro(x,y,x-1,y,direcao):
+                    atualiza_ponto(-1)
+                    py_assert('database.pl', "passou_voltando(%s,%s)."%(x-1,y))
+                    x=x-1
+                        
+            elif(len(list(prolog.query("seguro(%s,%s)"%(x,y+1))))>0):
+                if ((direcao=='norte') or (direcao == 'sul')):
+                    atualiza_ponto(-1)
+                elif direcao == 'oeste':
+                    atualiza_ponto(-2)
+                direcao = 'leste'
+                if(munda_local_arqueiro(x,y,x,y+1,direcao)):
+                    atualiza_ponto(-1)
+                    py_assert('database.pl', "passou_voltando(%s,%s)."%(x,y+1))
+                    y=y+1
+                    
+            elif(len(list(prolog.query("seguro(%s,%s)"%(x+1,y))))>0):
+                if (direcao == 'norte'):
+                    atualiza_ponto(-2)
+                elif ((direcao == 'oeste') or (direcao=='leste')):
+                    atualiza_ponto(-1)
+                direcao = 'sul'
+                if (munda_local_arqueiro(x,y,x+1,y,direcao)):
+                    atualiza_ponto(-1)
+                    py_assert('database.pl', "passou_voltando(%s,%s)."%(x+1,y))
+                    x=x+1
+    prolog.consult('database.pl')
+    print_tabuleiro(preenche_tabuleiro())
+    print 'saiu xddddddddddddddddddddddddddddddddddddddddddddddddddd'
+    return
+    
+    
 #função usada pela arqueiro_anda
 #ela descobre paredes adjacentes ao arqueiro e coloca no db
 def descobre_parede_adjacente(x,y):
@@ -779,11 +881,11 @@ def decide_se_atira(estado):
     inimigo_a_frente = list(prolog.query('inimigo_a_frente(%s,%s,%s)' %(x,y, direcao)))
     if len(inimigo_a_frente) > 0:
         print 'Tem inimigo a frente'
-        if estado > 4:
+        if estado > 6:
             atira()
             return True
     if len(sentiu_fedor) > 0:
-        if estado > 4:
+        if estado > 6:
             atira()
         return True
     return False
@@ -798,9 +900,9 @@ def extrai_estado(x, y):
 def main():
     cont = 0
     cont_ouro = 0
-    while(True):
+    while(cont_ouro<2):
         sleep(0)
-        if cont > 50:
+        if cont > 150:
             return
         prolog.consult('database.pl')
         pontuacao = list(prolog.query('pontuacao(P)'))
@@ -826,15 +928,18 @@ def main():
             inimigo_dano()
             if pega_ouro() == True:
                 cont_ouro = cont_ouro + 1
+                py_assert('database.pl',"tem_ouro(%s,%s)."%(x,y))
             print pontuacao[0].get('P') 
+            
         cont = cont + 1
+        
+    xn,yn,direcaonova = acha_coordenada_arqueiro()
+    volta_casa(xn,yn,direcaonova)
+    
 #print ret_sentiu_fedor(1,1)
 main()
 coord_inimigo = list(prolog.query("inimigo(X,Y,_,_)"))
-for i in coord_inimigo:
-    print i[0].get('X') , '< -coord x'
-    print i[0].get('Y') , '<- coord y'
-    print '*'*20
+
 #atira()
 #pega_ouro()
 #inimigo_dano(10, 2)
