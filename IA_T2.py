@@ -737,6 +737,12 @@ def decide_se_atira(estado):
     x, y, direcao = acha_coordenada_arqueiro()
     sentiu_fedor = list(prolog.query('sentiu_fedor(%s,%s)' %(x,y)))
     print sentiu_fedor
+    inimigo_a_frente = list(prolog.query('inimigo_a_frente(%s,%s,%s)' %(x,y, direcao)))
+    if len(inimigo_a_frente) > 0:
+        print 'Tem inimigo a frente'
+        if estado > 10:
+            atira()
+            return True
     if len(sentiu_fedor) > 0:
         if estado > 10:
             atira()
