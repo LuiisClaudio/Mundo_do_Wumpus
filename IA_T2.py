@@ -166,6 +166,19 @@ def caiu_poco():
         return True
     return False
 
+def atualiza_estado(x, y):
+    prolog.consult('database.pl')
+    estado = list(prolog.query('estado(%s,%s, T)'%(x,y)))
+    if len(estado) == 0:
+        py_assert('database.pl', 'estado(%s,%s,1).'%(x,y))
+        return False
+    py_retract('database.pl', 'estado(%s,%s,%s).' %(x,y,estado[0].get('T')))
+    py_assert('database.pl', 'estado(%s,%s,%s).' %(x,y,int(estado[0].get('T'))+ 1))
+atualiza_estado(1,1)    
+atualiza_estado(1,1)
+atualiza_estado(1,1)
+atualiza_estado(1,1)
+atualiza_estado(1,1)  
 def atualiza_municao(total):
     prolog.consult('database.pl')
     municao = list(prolog.query('municao(B)'))
