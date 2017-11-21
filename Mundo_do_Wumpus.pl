@@ -24,6 +24,7 @@
 :- dynamic ouviu_passos_inimigo/2.
 :- dynamic seguro/2.
 :- dynamic sentiu_brisa/2.
+:- dynamic estado/3.
 
 
 %funcionou
@@ -77,7 +78,7 @@ descobre_pode_ter_inimigo(X, Y) :- not(visitadas(X, Y)), not(tem_inimigo(X, Y)),
 
 
 
-
+muda_estado(X,Y) :- estado(X,Y,V), Z is V+1, retract(estado(X,Y,V)), assert(estado(X,Y,Z)).
 tem_poco(X,Y) :- local_arqueiro(X,Y,_), poco(X,Y), !.
 tem_ouro(X,Y) :- local_arqueiro(X,Y,_), ouro(X,Y), !.
 tem_inimigo(X,Y) :- local_arqueiro(X,Y,_), inimigo(_,_,X,Y), !.
