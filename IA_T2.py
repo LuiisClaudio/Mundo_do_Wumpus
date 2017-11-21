@@ -15,12 +15,14 @@ def database_default(pl_file):
             'local_arqueiro(1,1,oeste).\n'
             'visitadas(1,1).\n',
             'pontuacao(0).\n',
-            'municao(5).\n'
+            'municao(5).\n',
+            'tem_inimigo(2,1).\n'
 			
 	    ##Não deve entrar no default
 	    
 	    ,'inimigo(20, 100, 2, 1).\n',
-            'poco(2,1).\n'
+            'poco(2,1).\n',
+            'tem_inimigo(1,2).\n'
             ]
         f.seek(0)
         for line in fatos_default:
@@ -232,7 +234,7 @@ def faz_dano(x, y, dano):
         return True
     print 'inimigo(%s,%s,%s,%s).'%(inimigo[0].get('D'),vida_inimigo,x,y), 'tem_inimgo(%s,%s)' %(x, y)
     py_assert('database.pl', 'inimigo(%s,%s,%s,%s).'%(inimigo[0].get('D'),vida_inimigo,x,y) )
-    py_assert('database.pl', 'tem_inimgo(%s,%s).' %(x, y))
+    py_assert('database.pl', 'tem_inimigo(%s,%s).' %(x, y))
     return False
 
 def acerta_inimigo(x, y, d, xx, yy):

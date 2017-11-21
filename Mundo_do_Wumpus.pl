@@ -45,7 +45,12 @@ deu_dano(X, Y, D, Z, W) :- Y < W, X == Z,  D == oeste.
 
 estado_atual_arqueiro(X, Y, Direcao, Energia, Pontuacao, Municao) :- local_arqueiro(X, Y, Direcao), energia(Energia), pontuacao(Pontuacao), municao(Municao), !.
 
+adjacente(X, Y, XX, Y) :- XX is X+1, pode_ser_acessada(XX, Y).
 
+inimigo_a_frente(X, Y, D) :- T is X -1, D == norte, tem_inimigo(T, Y).
+inimigo_a_frente(X, Y, D) :- T is X + 1, D == sul, tem_inimigo(T, Y).
+inimigo_a_frente(X, Y, D) :- T is Y - 1, D == leste, tem_inimigo(X, T).
+inimigo_a_frente(X, Y, D) :- T is Y + 1, D == oeste, tem_inimigo(X, T).
 
 %Percepcoes FUNCIONA
 sentiu_brisa_poco(X, Y) :- adjacente(X, Y, XX, YY), poco(XX, YY), !. 
@@ -64,8 +69,6 @@ arqueiro_andar_direcao(X, Y) :- local_arqueiro(XX, YY, Direcao), Y is YY+1, XX =
 arqueiro_andar_direcao(X, Y) :- local_arqueiro(XX, YY, Direcao), X is XX-1, YY = Y, Direcao=oeste, !.
 
 
-%Base de conhecimento
-
 %descorbertas
 
 descobre_pode_ter_poco(X, Y) :- not(visitadas(X, Y)), not(nao_tem_poco(X, Y)), assert(pode_ter_poco(X, Y)), !.
@@ -73,44 +76,7 @@ descobre_pode_ter_poco(X, Y) :- not(visitadas(X, Y)), not(nao_tem_poco(X, Y)), a
 descobre_pode_ter_inimigo(X, Y) :- not(visitadas(X, Y)), not(tem_inimigo(X, Y)), not(nao_tem_inimigo(X, Y)), assert(pode_ter_inimigo(X, Y)), !.
 
 
-descobre_adjacente_pode_ter_poco() :-
-	local_arqueiro(X, Y, _),
-	(( XX is X+1, adjacente(X, Y, XX, Y), descobre_pode_ter_poco(XX, Y) );1=1),
-	(( XXX is X-1, adjacente(X, Y, XXX, Y), descobre_pode_ter_poco(XXX, Y) );1=1),
-	(( YY is Y+1, adjacente(X, Y, X, YY), descobre_pode_ter_poco(X, YY) );1=1),
-	(( YYY is Y-1, adjacente(X, Y, X, YYY), descobre_pode_ter_poco(X, YYY) );1=1), !.
 
-
-descobre_adjacente_pode_ter_inimigo() :-
-	local_arqueiro(X, Y, _),
-	(( XX is X+1, adjacente(X, Y, XX, Y), descobre_pode_ter_inimigo(XX, Y) );1=1),
-	(( XXX is X-1, adjacente(X, Y, XXX, Y), descobre_pode_ter_inimigo(XXX, Y) );1=1),
-	(( YY is Y+1, adjacente(X, Y, X, YY), descobre_pode_ter_inimigo(X, YY) );1=1),
-(( YYY is Y-1, adjacente(X, Y, X, YYY), descobre_pode_ter_inimigo(X, YYY) );1=1), !.
-
-
-
-
-
-
-
-remover_incerteza_poco_adjacente(X, Y) :- assert(nao_tem_poco(X, Y)), retractall(pode_ter_poco(X, Y)), !.	
-remover_incertezas_inimigos_adjacentes(X, Y) :- assert(nao_tem_inimigo(X, Y)), retractall(pode_ter_inimigo(X, Y)), !.
-
-remover_incertezas_pocos_adjacentes() :-
-	local_arqueiro(X, Y, _),
-	(( XX is X+1, adjacente(X, Y, XX, Y), remover_incerteza_poco_adjacente(XX, Y) );1=1),
-	(( XXX is X-1, adjacente(X, Y, XXX, Y), remover_incerteza_poco_adjacente(XXX, Y) );1=1),
-	(( YY is Y+1, adjacente(X, Y, X, YY), remover_incerteza_poco_adjacente(X, YY) );1=1),
-	(( YYY is Y-1, adjacente(X, Y, X, YYY), remover_incerteza_poco_adjacente(X, YYY) );1=1), !.
-
-
-remover_incertezas_inimigos_adjacentes() :-
-	local_arqueiro(X, Y, _),
-	(( XX is X+1, adjacente(X, Y, XX, Y), remover_incertezas_inimigos_adjacentes(XX, Y) );1=1),
-	(( XXX is X-1, adjacente(X, Y, XXX, Y), remover_incertezas_inimigos_adjacentes(XXX, Y) );1=1),
-	(( YY is Y+1, adjacente(X, Y, X, YY), remover_incertezas_inimigos_adjacentes(X, YY) );1=1),
-	(( YYY is Y-1, adjacente(X, Y, X, YYY), remover_incertezas_inimigos_adjacentes(X, YYY) );1=1), !.
 
 tem_poco(X,Y) :- local_arqueiro(X,Y,_), poco(X,Y), !.
 tem_ouro(X,Y) :- local_arqueiro(X,Y,_), ouro(X,Y), !.
