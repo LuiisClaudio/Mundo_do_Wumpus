@@ -23,7 +23,7 @@
 :- dynamic inimigo/4.
 :- dynamic ouviu_passos_inimigo/2.
 :- dynamic seguro/2.
-
+:- dynamic sentiu_brisa/2.
 
 
 %funcionou
