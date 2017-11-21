@@ -70,7 +70,7 @@ def cria_caverna():
         
         print i
     #cria os inimigos que dao 20 de dano
-    while(inimigos_20 <2):
+    while(inimigos_20 <20):
         new_local=[]
         col_num = random.randint(1,12)
         lin_num = random.randint(1,12)
@@ -241,16 +241,16 @@ def inimigo_dano():
     return False
 
 def faz_dano(x, y, dano):
-    prolog.consult('database.pl')
+    prolog.consult('check.pl')
     inimigo = list(prolog.query('inimigo(D,V,%s,%s)'%(x,y)))
     vida_inimigo = inimigo[0].get('V') - dano
     print vida_inimigo
-    py_retract('database.pl','inimigo(%s,%s,%s,%s).'%(inimigo[0].get('D'),inimigo[0].get('V'),x,y) )
+    py_retract('check.pl','inimigo(%s,%s,%s,%s).'%(inimigo[0].get('D'),inimigo[0].get('V'),x,y) )
     if vida_inimigo <= 0:
         py_assert('database.pl', 'inimigo_grito(%s,%s)'%(x, y))
         return True
     print 'inimigo(%s,%s,%s,%s).'%(inimigo[0].get('D'),vida_inimigo,x,y), '\ntem_inimigo(%s,%s).' %(x, y)
-    py_assert('database.pl', 'inimigo(%s,%s,%s,%s).'%(inimigo[0].get('D'),vida_inimigo,x,y) )
+    py_assert('check.pl', 'inimigo(%s,%s,%s,%s).'%(inimigo[0].get('D'),vida_inimigo,x,y) )
     py_retract('database.pl', 'tem_inimigo(%s,%s).' %(x, y))
     py_assert('database.pl', 'tem_inimigo(%s,%s).' %(x, y))
     return False
@@ -335,7 +335,7 @@ def assert_pode_ter_poco(x, y):
 #assert_pode_ter_poco(1,1)
         
 def ret_sentiu_fedor(x, y):
-    prolog.consult('check.pl')
+    prolog.consult('database.pl')#prolog.consult('check.pl')
     sentiu_fedor = list(prolog.query("sentiu_fedor(%s,%s)"%(x, y)))
     if len(sentiu_fedor) == 0:
         return False
@@ -827,6 +827,7 @@ def main():
                 cont_ouro = cont_ouro + 1
             print pontuacao[0].get('P') 
         cont = cont + 1
+#print ret_sentiu_fedor(1,1)
 main()
 #atira()
 #pega_ouro()
