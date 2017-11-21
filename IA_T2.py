@@ -165,7 +165,7 @@ prolog.consult('database.pl')
 def caiu_poco():
     prolog.consult('database.pl') 
     x, y, direcao = acha_coordenada_arqueiro()
-    print x, y
+    #print x, y
     poco = list(prolog.query('poco(%s,%s)'%(x,y)))
     if len(poco) == 0:
         return False
@@ -217,7 +217,7 @@ def pega_ouro():
     prolog.consult('check.pl') 
     x, y, direcao = acha_coordenada_arqueiro()
     ouro = list(prolog.query('ouro(%s,%s)'%(x,y)))
-    print len(ouro)
+    #print len(ouro)
     if len(ouro) == 0:
         return False
     tem_ouro = list(prolog.query('tem_ouro(%s,%s)'%(x,y)))
@@ -244,7 +244,7 @@ def faz_dano(x, y, dano):
     prolog.consult('check.pl')
     inimigo = list(prolog.query('inimigo(D,V,%s,%s)'%(x,y)))
     vida_inimigo = inimigo[0].get('V') - dano
-    print vida_inimigo
+    #print vida_inimigo
     py_retract('check.pl','inimigo(%s,%s,%s,%s).'%(inimigo[0].get('D'),inimigo[0].get('V'),x,y) )
     if vida_inimigo <= 0:
         py_assert('database.pl', 'inimigo_grito(%s,%s)'%(x, y))
@@ -267,7 +267,7 @@ def acerta_inimigo(x, y, d, xx, yy):
     return False
 
 def atira():
-    print 'Vou atirar'
+    #print 'Vou atirar'
     atualiza_ponto(-10)
     atualiza_municao(-1)
     prolog.consult('check.pl')
@@ -526,8 +526,8 @@ def arqueiro_anda(cont_ouro):
                 
     else:
         if sentiu_brisa:
-            print 'entrei no if da brisa'
-            sleep(1)
+            #print 'entrei no if da brisa'
+            #sleep(1)
             if (len(list(prolog.query("sentiu_brisa(%s,%s)"%(x,y))))<1):
         
                 py_assert('database.pl', "sentiu_brisa(%s,%s)."%(x,y))
@@ -535,12 +535,12 @@ def arqueiro_anda(cont_ouro):
                 sleep(1)
         if sentiu_fedor:
             print 'entrei no if do fedor'
-            sleep(1)
+            #sleep(1)
             prolog.query("muda_estado(%s,%s)"%(x,y))
             if( len(list(prolog.query("sentiu_fedor_in(%s,%s)"%(x,y))))<1):
                 py_assert('database.pl',"sentiu_fedor_in(%s,%s)."%(x,y))
-                print 'sentiu fedor'
-                sleep(1)
+                #print 'sentiu fedor'
+                #sleep(1)
                 
     turn = 0
     while(True):
@@ -799,7 +799,7 @@ def main():
     cont_ouro = 0
     while(True):
         sleep(0)
-        if cont > 200:
+        if cont > 50:
             return
         prolog.consult('database.pl')
         pontuacao = list(prolog.query('pontuacao(P)'))
@@ -814,7 +814,7 @@ def main():
             #return False
         if(energia[0].get('E') < 0):
             print 'Arqueiro morreu'
-            atualiza_pontuacao(-1000)
+            atualiza_ponto(-1000)
             break
         print_tabuleiro(preenche_tabuleiro())
         if arqueiro_anda(cont_ouro) == True:
@@ -829,6 +829,11 @@ def main():
         cont = cont + 1
 #print ret_sentiu_fedor(1,1)
 main()
+coord_inimigo = list(prolog.query("inimigo(X,Y,_,_)"))
+for i in coord_inimigo:
+    print i[0].get('X') , '< -coord x'
+    print i[0].get('Y') , '<- coord y'
+    print '*'*20
 #atira()
 #pega_ouro()
 #inimigo_dano(10, 2)
