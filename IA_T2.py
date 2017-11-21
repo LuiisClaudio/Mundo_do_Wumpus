@@ -163,7 +163,7 @@ prolog.consult('database.pl')
 
 
 def caiu_poco():
-    prolog.consult('database.pl') 
+    prolog.consult('check.pl') 
     x, y, direcao = acha_coordenada_arqueiro()
     #print x, y
     poco = list(prolog.query('poco(%s,%s)'%(x,y)))
@@ -228,7 +228,7 @@ def pega_ouro():
     return False
     
 def inimigo_dano():
-    prolog.consult('database.pl')
+    prolog.consult('check.pl')
     x, y, direcao = acha_coordenada_arqueiro()
     inimigo = list(prolog.query('inimigo(D,V,%s,%s)'%(x,y)))
     if len(inimigo) == 0:
@@ -335,7 +335,7 @@ def assert_pode_ter_poco(x, y):
 #assert_pode_ter_poco(1,1)
         
 def ret_sentiu_fedor(x, y):
-    prolog.consult('database.pl')#prolog.consult('check.pl')
+    prolog.consult('check.pl')
     sentiu_fedor = list(prolog.query("sentiu_fedor(%s,%s)"%(x, y)))
     if len(sentiu_fedor) == 0:
         return False
@@ -386,7 +386,7 @@ def sentiu_brisa(x, y):
     return False
 
 def sentiu_fedor(x, y):
-    prolog.consult('database.pl')
+    prolog.consult('check.pl')
     inimigo = list(prolog.query('inimigo(_,_,X,Y)'))
     print inimigo
     for i in inimigo:
@@ -404,7 +404,7 @@ def sentiu_fedor(x, y):
 #print 'Sentiu fedor ', sentiu_fedor(1,1)
 def faz_percepcao():
     'entrou na percepcao'
-    prolog.consult('database.pl')
+    prolog.consult('check.pl')
     x, y, d = acha_coordenada_arqueiro()
     percebeu = list(prolog.query("sentiu_alguma_coisa(%s, %s)" %(x,y)))
     if len(percebeu) == 0:
@@ -551,6 +551,7 @@ def arqueiro_anda(cont_ouro):
         #elif tentou_andar > 3:
             #return 'Sai tentando andar'
         prolog.consult('database.pl')
+        prolog.consult('check.pl')
         #print list(prolog.query("adjacente(1,2, X,Y)"))
         #print list(prolog.query("seguro(X,Y)")), 'lista segura'
         #print list(prolog.query("explorar(1,Y)")), 'explora'
