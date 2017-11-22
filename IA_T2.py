@@ -403,7 +403,7 @@ def sentiu_fedor(x, y):
 #print 'Sentiu brisa ', sentiu_brisa(1,1)
 #print 'Sentiu fedor ', sentiu_fedor(1,1)
 def faz_percepcao():
-    'entrou na percepcao'
+    #'entrou na percepcao'
     prolog.consult('check.pl')
     x, y, d = acha_coordenada_arqueiro()
     percebeu = list(prolog.query("sentiu_alguma_coisa(%s, %s)" %(x,y)))
@@ -475,10 +475,13 @@ def arqueiro_anda_py(X,Y,virado_para):
 def munda_local_arqueiro(x, y, xx, yy, direcao):
     if(not detecta_parede(xx,yy)):
         py_retract('database.pl',"local_arqueiro")
+        print 'retract de local_arqueiro(_,_,_)'
         py_assert('database.pl',"local_arqueiro(%s,%s,%s)." %(xx,yy, direcao))
+        print 'assert de local_arqueiro(%s,%s,%s)' %(xx,yy, direcao)
         prolog.consult('database.pl')
         if ((len(list(prolog.query("visitadas(%s,%s)" %(xx,yy)))))==0):
             py_assert('database.pl',"visitadas(%s,%s)." %(xx,yy))
+            print 'assert de visitadas(%s,%s)'%(xx,yy)
         descobre_parede_adjacente(xx, yy)
         return True
     return False
@@ -496,7 +499,7 @@ def munda_local_arqueiro(x, y, xx, yy, direcao):
 def arqueiro_anda(cont_ouro):
     rand_direcao = 1
     tentou_andar = 0 
-    max_repeticao = 4
+    #max_repeticao = 4
     cont_repeticao = 0
 
     x,y,direcao = acha_coordenada_arqueiro()
@@ -510,18 +513,22 @@ def arqueiro_anda(cont_ouro):
         if (not detecta_parede(x+1,y)):
             if (len(list(prolog.query("seguro(%s,%s)"%(x+1,y))))<1):
                 py_assert('database.pl',"seguro(%s,%s)."%(x+1,y))
+                print 'assert de seguro(%s,%s)'%(x+1,y)
 
         if (not detecta_parede(x-1,y)):
             if (len(list(prolog.query("seguro(%s,%s)"%(x-1,y))))<1):
                 py_assert('database.pl',"seguro(%s,%s)."%(x-1,y))
+                print 'assert de seguro(%s,%s)'%(x-1,y)
 
         if (not detecta_parede(x,y+1)):
             if (len(list(prolog.query("seguro(%s,%s)"%(x,y+1))))<1):
                 py_assert('database.pl',"seguro(%s,%s)."%(x,y+1))
+                print 'assert de seguro(%s,%s)'%(x,y+1)
 
         if (not detecta_parede(x,y-1)):
             if (len(list(prolog.query("seguro(%s,%s)"%(x,y-1))))<1):
                 py_assert('database.pl',"seguro(%s,%s)."%(x,y-1))
+                print 'assert de seguro(%s,%s)'%(x,y-1)
                 
                 
     else:
@@ -531,7 +538,7 @@ def arqueiro_anda(cont_ouro):
             if (len(list(prolog.query("sentiu_brisa(%s,%s)"%(x,y))))<1):
         
                 py_assert('database.pl', "sentiu_brisa(%s,%s)."%(x,y))
-                print 'sentiu brisa'
+                print 'assert de sentiu_brisa(%s,%s)'%(x,y)
                 #sleep(1)
         if sentiu_fedor:
             print 'entrei no if do fedor'
@@ -540,13 +547,14 @@ def arqueiro_anda(cont_ouro):
             print list(prolog.query('estado(%s,%s,X)'%(x,y)))
             if( len(list(prolog.query("sentiu_fedor_in(%s,%s)"%(x,y))))<1):
                 py_assert('database.pl',"sentiu_fedor_in(%s,%s)."%(x,y))
+                print 'assert de sentiu_fedor_in(%s,%s)'%(x,y)
                 #print 'sentiu fedor'
                 #sleep(1)
                 
     turn = 0
     while(True):
 
-        print x,'   ', y,  'sao as coord' , direcao , 'é a direcao'
+        #print x,'   ', y,  'sao as coord' , direcao , 'é a direcao'
         #if cont_repeticao >= max_repeticao:
             #return 'Repeticao maxima'
         #elif tentou_andar > 3:
@@ -573,60 +581,62 @@ def arqueiro_anda(cont_ouro):
                         if munda_local_arqueiro(x,y,x-1, y, direcao) == True:
                             tentou_andar=0
                             turn = 0
-                            print'andou norte depois de girar peão do baú\n'
+                            #print'andou norte depois de girar peão do baú\n'
                             atualiza_ponto(-1)
                             return True
                     else:
                         rand_direcao = random.randint(1,2)
                         if rand_direcao == 1:
-                            print'virou oeste', turn
+                            #print'virou oeste', turn
                             atualiza_ponto(-1)
                             direcao = 'oeste' #arqueiro_anda(x,y,'oeste')
                         else:
-                            print'virou leste', turn
+                            #print'virou leste', turn
                             atualiza_ponto(-1)
                             direcao = 'leste' #arqueiro_anda(x,y,'leste')
                 else:
                     if munda_local_arqueiro(x,y,x-1, y, direcao) == True:
                         tentou_andar=0
                         turn = 0
-                        print  turn ,'andou norte\n'
+                        #print  turn ,'andou norte\n'
                         atualiza_ponto(-1)
                         return True
             else:
                 rand_direcao = random.randint(1,2)
                 tentou_andar=tentou_andar+1
                 if rand_direcao == 1:
-                    print'virou oeste', turn+1
+                    #print'virou oeste', turn+1
                     turn = turn + 1
                     atualiza_ponto(-1)
                     direcao = 'oeste' #arqueiro_anda(x,y,'oeste')
                 else:
-                    print'virou leste', turn+1
+                    #print'virou leste', turn+1
                     turn = turn + 1
                     atualiza_ponto(-1)
                     direcao = 'leste' #arqueiro_anda(x,y,'leste')
                     
                 
         elif(direcao == 'sul'):
+            print 'query de se é seguro(%s,%s)'%(x+1,y)
             if (len(list(prolog.query("seguro(%s,%s)" %(x+1,y))))>0):
+                print 'query de visitadas(%s,%s)'%(x+1,y)
                 if (len(list(prolog.query("visitadas(%s,%s)" %(x+1,y))))>0):
-                    print 'ja passei aqui sul' , turn
+                    #print 'ja passei aqui sul' , turn
                     turn = turn + 1
                     if turn > random.randint(2,4):
                         if munda_local_arqueiro(x,y,x+1, y, direcao) == True:
                             tentou_andar=0
-                            print'andou sul depois de girar peão do baú\n'
+                            #print'andou sul depois de girar peão do baú\n'
                             atualiza_ponto(-1)
                             return True
                     else:
                         rand_direcao = random.randint(1,2)
                         if rand_direcao == 1:
-                            print'virou leste', turn
+                            #print'virou leste', turn
                             atualiza_ponto(-1)
                             direcao = 'leste' #arqueiro_anda(x,y,'leste')
                         else:
-                            print 'virou oeste', turn
+                            #print 'virou oeste', turn
                             direcao = 'oeste'#arqueiro_anda(x,y,'oeste')
                             atualiza_ponto(-1)
                         
@@ -634,27 +644,29 @@ def arqueiro_anda(cont_ouro):
                         if munda_local_arqueiro(x,y,x+1, y, direcao) == True:
                             tentou_andar=0
                             turn = 0
-                            print'andou sul\n'
+                            #print'andou sul\n'
                             atualiza_ponto(-1)
                             return True
                         
             else:
                 rand_direcao = random.randint(1,2)
                 if rand_direcao == 1:
-                    print'virou leste', turn+1
+                    #print'virou leste', turn+1
                     turn = turn + 1
                     direcao = 'leste' #arqueiro_anda(x,y, 'leste')
                     atualiza_ponto(-1)
                     tentou_andar=tentou_andar+1
                 else:
-                    print'virou oeste', turn+1
+                    #print'virou oeste', turn+1
                     turn = turn + 1
                     direcao = 'oeste' #arqueiro_anda(x,y, 'leste')
                     atualiza_ponto(-1)
                     tentou_andar=tentou_andar+1
                 
         elif(direcao == 'leste'):
+            print 'query de seguro(%s,%s)' %(x,y+1)
             if (len(list(prolog.query("seguro(%s,%s)" %(x,y+1))))>0):
+                print 'query de visitadas(%s,%s)' %(x,y+1)
                 if (len(list(prolog.query("visitadas(%s,%s)" %(x,y+1))))>0):
                     print 'ja passei aqui leste' , turn
                     turn = turn + 1
@@ -662,17 +674,17 @@ def arqueiro_anda(cont_ouro):
                         if munda_local_arqueiro(x,y,x, y+1, direcao) == True:
                             tentou_andar=0
                             turn =0
-                            print'andou leste depois de girar peão do baú\n'
+                            #print'andou leste depois de girar peão do baú\n'
                             atualiza_ponto(-1)
                             return True
                     else:
                         rand_direcao = random.randint(1,2)
                         if rand_direcao == 1:
-                            print 'virou norte', turn
+                            #print 'virou norte', turn
                             atualiza_ponto(-1)
                             direcao = 'norte'
                         else:
-                            print 'virou sul', turn
+                            #print 'virou sul', turn
                             atualiza_ponto(-1)
                             direcao = 'sul'
                 
@@ -681,19 +693,19 @@ def arqueiro_anda(cont_ouro):
                         tentou_andar=0
                         turn =0
                         atualiza_ponto(-1)
-                        print'andou leste\n'
+                        #print'andou leste\n'
                         return True
                 
             else:
                 rand_direcao = random.randint(1,2)
                 if rand_direcao == 1:
-                    print'virou norte', turn+1
+                    #print'virou norte', turn+1
                     turn = turn + 1
                     atualiza_ponto(-1)
                     direcao = 'norte'  #arqueiro_anda(x,y,'norte')
                     tentou_andar=tentou_andar+1
                 else:
-                    print'virou sul', turn+1
+                    #print'virou sul', turn+1
                     turn = turn + 1
                     atualiza_ponto(-1)
                     direcao = 'sul'  #arqueiro_anda(x,y,'norte')
@@ -702,44 +714,44 @@ def arqueiro_anda(cont_ouro):
         elif (direcao == 'oeste'):
             if (len(list(prolog.query("seguro(%s,%s)" %(x,y-1))))>0):
                 if (len(list(prolog.query("visitadas(%s,%s)" %(x,y-1))))>0):
-                    print 'ja passei aqui oeste' , turn
+                    #print 'ja passei aqui oeste' , turn
                     turn = turn + 1
                     if turn > random.randint(2,4):
                         if munda_local_arqueiro(x,y,x, y-1, direcao) == True:
                             tentou_andar=0
                             turn = 0
-                            print'andou oeste'
+                            #print'andou oeste'
                             atualiza_ponto(-1)
-                            print '\n'
+                            #print '\n'
                             return True
                     else:
                         rand_direcao = random.randint(1,2)
                         if rand_direcao == 1:
-                            print 'virou sul'
+                            #print 'virou sul'
                             direcao = 'sul'
                             atualiza_ponto(-1)
                         else:
-                            print 'virou norte'
+                            #print 'virou norte'
                             atualiza_ponto(-1)
                             direcao = 'norte'
                 else:
                     if munda_local_arqueiro(x,y,x, y-1, direcao) == True:
                         tentou_andar=0
                         turn = 0
-                        print'andou oeste'
+                        #print'andou oeste'
                         atualiza_ponto(-1)
-                        print '\n'
+                        #print '\n'
                         return True
             else:
                 rand_direcao = random.randint(1,2)
                 if rand_direcao == 1:
-                    print'virou sul', turn+1
+                    #print'virou sul', turn+1
                     turn = turn + 1
                     direcao = 'sul'     #arqueiro_anda(x,y,'sul')
                     atualiza_ponto(-1)
                     tentou_andar=tentou_andar + 1
                 else:
-                    print'virou norte', turn+1
+                    #print'virou norte', turn+1
                     turn = turn + 1
                     direcao = 'norte'     #arqueiro_anda(x,y,'sul')
                     atualiza_ponto(-1)
@@ -757,6 +769,7 @@ def volta_casa(x,y,direcao):
         prolog.consult('database.pl')
         print_tabuleiro(preenche_tabuleiro())
         if (x>=y):
+            print 'faz query de seguro adjacentes em ordem de norte, oeste, sul ,leste e passou_voltando'
             if ((len(list(prolog.query("seguro(%s,%s)"%(x-1,y))))>0) and (len(list(prolog.query("passou_voltando(%s,%s)"%(x-1,y))))<0)):
                 if (direcao == 'sul'):
                     atualiza_ponto(-2)
@@ -766,6 +779,7 @@ def volta_casa(x,y,direcao):
                 if munda_local_arqueiro(x,y,x-1,y,direcao):
                     atualiza_ponto(-1)
                     py_assert('database.pl', "passou_voltando(%s,%s)."%(x-1,y))
+                    print 'faz assert passou_voltando(%s,%s)'%(x-1,y)
                     x= x-1
                     
             elif ((len(list(prolog.query("seguro(%s,%s)"%(x,y-1))))>0)and (len(list(prolog.query("passou_voltando(%s,%s)"%(x,y-1))))<0)):
@@ -777,6 +791,7 @@ def volta_casa(x,y,direcao):
                 if (munda_local_arqueiro(x,y,x,y-1,direcao)):
                     atualiza_ponto(-1)
                     py_assert('database.pl', "passou_voltando(%s,%s)."%(x,y-1))
+                    print 'faz o assert passou_voltando(%s,%s)'%(x,y-1)
                     y=y-1
                     
             elif(len(list(prolog.query("seguro(%s,%s)"%(x+1,y))))>0):
@@ -788,6 +803,7 @@ def volta_casa(x,y,direcao):
                 if (munda_local_arqueiro(x,y,x+1,y,direcao)):
                     atualiza_ponto(-1)
                     py_assert('database.pl', "passou_voltando(%s,%s)."%(x+1,y))
+                    print 'faz o assert passou_voltando(%s,%s)'%(x+1,y)
                     x=x+1
                     
             elif(len(list(prolog.query("seguro(%s,%s)"%(x,y+1))))>0):
@@ -799,6 +815,7 @@ def volta_casa(x,y,direcao):
                 if(munda_local_arqueiro(x,y,x,y+1,direcao)):
                     atualiza_ponto(-1)
                     py_assert('database.pl', "passou_voltando(%s,%s)."%(x,y+1))
+                    print 'faz o assert passou_voltando(%s,%s)'%(x,y+1)
                     y=y+1
                     
         elif (x<y):
@@ -811,6 +828,7 @@ def volta_casa(x,y,direcao):
                 if (munda_local_arqueiro(x,y,x,y-1,direcao)):
                     atualiza_ponto(-1)
                     py_assert('database.pl', "passou_voltando(%s,%s)."%(x,y-1))
+                    print 'faz o assert passou_voltando(%s,%s)'%(x,y-1)
                     y=y-1
                     
             elif (len(list(prolog.query("seguro(%s,%s)"%(x-1,y))))>0 and (len(list(prolog.query("passou_voltando(%s,%s)"%(x-1,y))))<0)):
@@ -822,6 +840,7 @@ def volta_casa(x,y,direcao):
                 if munda_local_arqueiro(x,y,x-1,y,direcao):
                     atualiza_ponto(-1)
                     py_assert('database.pl', "passou_voltando(%s,%s)."%(x-1,y))
+                    print 'faz o assert passou_voltando(%s,%s)'%(x-1,y)
                     x=x-1
                         
             elif(len(list(prolog.query("seguro(%s,%s)"%(x,y+1))))>0):
@@ -833,6 +852,7 @@ def volta_casa(x,y,direcao):
                 if(munda_local_arqueiro(x,y,x,y+1,direcao)):
                     atualiza_ponto(-1)
                     py_assert('database.pl', "passou_voltando(%s,%s)."%(x,y+1))
+                    print 'faz o assert passou_voltando(%s,%s)'%(x,y+1)
                     y=y+1
                     
             elif(len(list(prolog.query("seguro(%s,%s)"%(x+1,y))))>0):
@@ -844,10 +864,12 @@ def volta_casa(x,y,direcao):
                 if (munda_local_arqueiro(x,y,x+1,y,direcao)):
                     atualiza_ponto(-1)
                     py_assert('database.pl', "passou_voltando(%s,%s)."%(x+1,y))
+                    print 'faz o assert passou_voltando(%s,%s)'%(x+1,y)
                     x=x+1
+                    
     prolog.consult('database.pl')
     print_tabuleiro(preenche_tabuleiro())
-    print 'saiu xddddddddddddddddddddddddddddddddddddddddddddddddddd'
+    #print 'saiu xddddddddddddddddddddddddddddddddddddddddddddddddddd'
     return
     
     
@@ -857,15 +879,19 @@ def descobre_parede_adjacente(x,y):
     if(x==1):
         if (len(list(prolog.query("parede(%s,%s)"%(x-1,y))))<1):
             py_assert('database.pl',"parede(%s, %s)." %(x-1,y))
+            print 'faz o assert parede(%s, %s)' %(x-1,y)
     elif(x==12):
         if (len(list(prolog.query("parede(%s,%s)"%(x+1,y))))<1):
             py_assert('database.pl',"parede(%s, %s)." %(x+1,y))
+            print 'faz o assert parede(%s, %s)' %(x+1,y)
     if(y==1):
         if (len(list(prolog.query("parede(%s,%s)"%(x,y-1))))<1):
             py_assert('database.pl',"parede(%s,%s)." %(x,y-1))
+            print 'faz o assert parede(%s, %s)' %(x,y-1)
     elif(y==12):
         if (len(list(prolog.query("parede(%s,%s)"%(x,y+1))))<1):
             py_assert('database.pl',"parede(%s,%s)."%(x,y+1))
+            print 'faz o assert parede(%s, %s)' %(x,y+1)
     return True
 '''
 ***************************************
@@ -877,15 +903,16 @@ def decide_se_atira(estado):
     prolog.consult('database.pl')
     x, y, direcao = acha_coordenada_arqueiro()
     sentiu_fedor = list(prolog.query('sentiu_fedor(%s,%s)' %(x,y)))
-    print sentiu_fedor
+    print 'faz query de sentiu_fedor(%s,%s)'%(x,y)
     inimigo_a_frente = list(prolog.query('inimigo_a_frente(%s,%s,%s)' %(x,y, direcao)))
+    print 'query de inimigo_a_frente(%s,%s,%s)' %(x,y, direcao)
     if len(inimigo_a_frente) > 0:
         print 'Tem inimigo a frente'
-        if estado > 6:
+        if estado > 4:
             atira()
             return True
     if len(sentiu_fedor) > 0:
-        if estado > 6:
+        if estado > 4:
             atira()
         return True
     return False
@@ -894,6 +921,7 @@ def decide_se_atira(estado):
 def extrai_estado(x, y):
     prolog.consult('database.pl')
     estado = list(prolog.query('estado(%s,%s, T)' %(x,y)))
+    print 'query de estado(%s,%s, T) para descobrir o número referente a posicao' %(x,y)
     if len(estado) == 0:
         return 0
     return int(estado[0].get('T'))
@@ -901,9 +929,9 @@ def main():
     cont = 0
     cont_ouro = 0
     while(cont_ouro<2):
-        sleep(0)
-        if cont > 150:
-            return
+        sleep(1)
+        #if cont > 150:
+            #return
         prolog.consult('database.pl')
         pontuacao = list(prolog.query('pontuacao(P)'))
         energia = list(prolog.query('energia(E)'))
@@ -929,9 +957,11 @@ def main():
             if pega_ouro() == True:
                 cont_ouro = cont_ouro + 1
                 py_assert('database.pl',"tem_ouro(%s,%s)."%(x,y))
-            print pontuacao[0].get('P') 
-            
-        cont = cont + 1
+                print 'assert tem_ouro(%s,%s)'%(x,y)
+            print 'pontuacao atual:', pontuacao[0].get('P') 
+            print '\n'*5
+        #cont = cont + 1
+    
         
     xn,yn,direcaonova = acha_coordenada_arqueiro()
     volta_casa(xn,yn,direcaonova)
