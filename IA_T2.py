@@ -768,9 +768,9 @@ def volta_casa(x,y,direcao):
     while (x>1 and y>1):
         prolog.consult('database.pl')
         print_tabuleiro(preenche_tabuleiro())
-        if (x>=y):
-            print 'faz query de seguro adjacentes em ordem de norte, oeste, sul ,leste e passou_voltando'
-            if ((len(list(prolog.query("seguro(%s,%s)"%(x-1,y))))>0) and (len(list(prolog.query("passou_voltando(%s,%s)"%(x-1,y))))<0)):
+        if (x>y):
+            print 'faz query de seguro adjacentes em ordem de norte, oeste, sul ,leste'
+            if (len(list(prolog.query("seguro(%s,%s)"%(x-1,y))))>0):
                 if (direcao == 'sul'):
                     atualiza_ponto(-2)
                 elif ((direcao == 'oeste') or (direcao == 'leste')):
@@ -782,7 +782,7 @@ def volta_casa(x,y,direcao):
                     print 'faz assert passou_voltando(%s,%s)'%(x-1,y)
                     x= x-1
                     
-            elif ((len(list(prolog.query("seguro(%s,%s)"%(x,y-1))))>0)and (len(list(prolog.query("passou_voltando(%s,%s)"%(x,y-1))))<0)):
+            elif ((len(list(prolog.query("seguro(%s,%s)"%(x,y-1))))>0)):
                 if ((direcao == 'norte') or (direcao == 'sul')):
                         atualiza_ponto(-1)
                 elif (direcao == 'leste'):
@@ -818,8 +818,8 @@ def volta_casa(x,y,direcao):
                     print 'faz o assert passou_voltando(%s,%s)'%(x,y+1)
                     y=y+1
                     
-        elif (x<y):
-            if (len(list(prolog.query("seguro(%s,%s)"%(x,y-1))))>0 and (len(list(prolog.query("passou_voltando(%s,%s)"%(x,y-1))))<0)):
+        elif (x<=y):
+            if (len(list(prolog.query("seguro(%s,%s)"%(x,y-1))))>0):
                 if ((direcao == 'norte') or (direcao == 'sul')):
                     atualiza_ponto(-1)
                 elif (direcao == 'leste'):
@@ -831,7 +831,7 @@ def volta_casa(x,y,direcao):
                     print 'faz o assert passou_voltando(%s,%s)'%(x,y-1)
                     y=y-1
                     
-            elif (len(list(prolog.query("seguro(%s,%s)"%(x-1,y))))>0 and (len(list(prolog.query("passou_voltando(%s,%s)"%(x-1,y))))<0)):
+            elif (len(list(prolog.query("seguro(%s,%s)"%(x-1,y))))>0):
                 if (direcao == 'sul'):
                     atualiza_ponto(-2)
                 elif ((direcao == 'oeste') or (direcao == 'leste')):
@@ -935,7 +935,7 @@ def extrai_estado(x, y):
 def main():
     cont = 0
     cont_ouro = 0
-    while(cont_ouro<2):
+    while(cont_ouro<3):
         sleep(1)
         #if cont > 150:
             #return
@@ -963,7 +963,7 @@ def main():
             inimigo_dano()
             if pega_ouro() == True:
                 cont_ouro = cont_ouro + 1
-                py_assert('database.pl',"tem_ouro(%s,%s)."%(x,y))
+                py_assert('database.pl',"tinha_ouro(%s,%s)."%(x,y))
                 print 'assert tem_ouro(%s,%s)'%(x,y)
             print 'pontuacao atual:', pontuacao[0].get('P') 
             print '\n'*5
