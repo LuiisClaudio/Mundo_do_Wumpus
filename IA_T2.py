@@ -898,9 +898,16 @@ def descobre_parede_adjacente(x,y):
 AQUI EM BAIXO FICAM OS TESTES DO CÓDIGO 
 ***************************************
 '''
-    
+def total_municao():
+    municao = list(prolog.query('municao(T)'))
+    if len(municao) == 0:
+        return 0
+    return int(municao[0].get('T'))
 def decide_se_atira(estado):
     prolog.consult('database.pl')
+    if total_municao() <= 0:
+        print 'Sem municao'
+        return False
     x, y, direcao = acha_coordenada_arqueiro()
     sentiu_fedor = list(prolog.query('sentiu_fedor(%s,%s)' %(x,y)))
     print 'faz query de sentiu_fedor(%s,%s)'%(x,y)
@@ -969,17 +976,3 @@ def main():
 #print ret_sentiu_fedor(1,1)
 main()
 coord_inimigo = list(prolog.query("inimigo(X,Y,_,_)"))
-
-#atira()
-#pega_ouro()
-#inimigo_dano(10, 2)
-#print caiu_poco()
-#atualiza_ponto(10)
-
-#py_assert('database.pl',"local_arqueiro(1,1,norte).")
-#py_assert('database.pl', "visitadas(1,1).")
-'''for i in range(40):
-    prolog.consult('database.pl')
-    print arqueiro_anda()
-    print i
-    print'''
