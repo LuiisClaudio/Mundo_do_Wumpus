@@ -248,6 +248,8 @@ def faz_dano(x, y, dano):
     py_retract('check.pl','inimigo(%s,%s,%s,%s).'%(inimigo[0].get('D'),inimigo[0].get('V'),x,y) )
     if vida_inimigo <= 0:
         py_assert('database.pl', 'inimigo_grito(%s,%s)'%(x, y))
+        py_assert('database.pl', 'seguro(%s,%s)'%(x,y))
+        py_assert('database.pl', 'visitadas(%s,%s)'%(x,y))
         return True
     print 'inimigo(%s,%s,%s,%s).'%(inimigo[0].get('D'),vida_inimigo,x,y), '\ntem_inimigo(%s,%s).' %(x, y)
     py_assert('check.pl', 'inimigo(%s,%s,%s,%s).'%(inimigo[0].get('D'),vida_inimigo,x,y) )
